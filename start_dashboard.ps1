@@ -1,7 +1,13 @@
 $ErrorActionPreference = 'Stop'
-$bundledPython = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
-if (Test-Path -LiteralPath $bundledPython) {
-    & $bundledPython -m streamlit run (Join-Path $PSScriptRoot 'dashboard\app.py') --server.address 127.0.0.1
-} else {
-    python -m streamlit run (Join-Path $PSScriptRoot 'dashboard\app.py') --server.address 127.0.0.1
+$projectPython = Join-Path $PSScriptRoot '.venv\Scripts\python.exe'
+if (-not (Test-Path -LiteralPath $projectPython)) {
+    $projectPython = 'python'
 }
+Push-Location -LiteralPath $PSScriptRoot
+try {
+    & $projectPython -m streamlit run dashboard/app.py --server.address 127.0.0.1 --server.port 8502
+    $dashboardExitCode = $LASTEXITCODE
+} finally {
+    Pop-Location
+}
+exit $dashboardExitCode

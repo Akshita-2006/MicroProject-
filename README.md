@@ -4,29 +4,13 @@ A Python research project that forecasts station-level AQI at 1, 6, 12 and 24 ho
 
 **Current state:** seven Delhi stations, historical observations from 2017–2023, saved trained models and a Streamlit replay dashboard. It is not a live monitoring feed or an official CPCB advisory. Newer data and broader station coverage remain work in progress.
 
-## Quick start on this computer
+## Quick start
 
-Open PowerShell in the project folder. You do not need to retrain models to view the existing dashboard.
+Install Python 3.12 and Git. Clone this repository using its GitHub **Code** URL, then open a terminal in the cloned folder (the folder containing `README.md`). All commands below use paths relative to that folder; no particular username or checkout location is required.
 
-```powershell
-cd "C:\Users\AKSHITA SACHDEVA\Desktop\MicroProject"
-$projectPython = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
-& $projectPython -m streamlit run dashboard/app.py --server.address 127.0.0.1 --server.port 8502
-```
+You do not need to retrain models to view the dashboard if the saved artifacts are available. Installing dependencies alone does not download data or models; see **Required data and saved artifacts** below.
 
-Open **http://127.0.0.1:8502/** in your browser. Keep the terminal open while using the app. Press **Ctrl+C** in that terminal to stop it. If the server is already running on that port, open its URL instead of starting another copy.
-
-An alternative launcher is:
-
-```powershell
-.\start_dashboard.ps1
-```
-
-That script uses the bundled Python when present and otherwise uses `python` from PATH. It does not specify a port: use the URL printed in its terminal (normally port 8501). Run it from the project root so the project Streamlit theme is loaded.
-
-## Install on another computer
-
-Use Python 3.12 and a virtual environment. The following commands are for Windows PowerShell, from the project root:
+### Windows PowerShell
 
 ```powershell
 py -3.12 -m venv .venv
@@ -34,9 +18,25 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m streamlit run dashboard/app.py --server.address 127.0.0.1 --server.port 8502
 ```
 
-No environment activation is required. On macOS/Linux, use `python3.12 -m venv .venv` and `.venv/bin/python` instead. `requirements-lock.txt` records the direct package versions used by this project; it is not a complete transitive dependency lock. `requirements.txt` contains unpinned package names. Prefer the recorded versions when loading the saved models.
+### macOS / Linux
 
-The saved data and model directories must also be present; installing Python packages does not download them. See the artifact requirements below.
+```bash
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-lock.txt
+.venv/bin/python -m streamlit run dashboard/app.py --server.address 127.0.0.1 --server.port 8502
+```
+
+No environment activation is required. Open **http://127.0.0.1:8502/** in your browser. Keep the terminal open while using the app. Press **Ctrl+C** to stop it. If this app is already running on that port, open its URL instead of starting another copy.
+
+After installation, Windows users can also run:
+
+```powershell
+.\start_dashboard.ps1
+```
+
+The launcher prefers the repository's `.venv` interpreter, otherwise uses `python` from PATH, and starts the dashboard on port 8502. It resolves the project directory from the script's location.
+
+`requirements-lock.txt` records the direct package versions used by this project; it is not a complete transitive dependency lock. `requirements.txt` contains unpinned package names. Prefer the recorded versions when loading the saved models.
 
 ## Using the dashboard
 
@@ -82,17 +82,13 @@ Training uses 2017–2021, model selection January–June 2022, and interval cal
 
 ## Commands for tests, reports and training
 
-From the project root, set the interpreter once. On this computer:
-
-```powershell
-$projectPython = Join-Path $env:USERPROFILE '.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
-```
-
-For a fresh virtual environment instead:
+From the project root, select the virtual environment created above (PowerShell):
 
 ```powershell
 $projectPython = '.\.venv\Scripts\python.exe'
 ```
+
+On macOS/Linux, replace `& $projectPython` in the commands below with `.venv/bin/python`.
 
 Run the automated tests:
 
