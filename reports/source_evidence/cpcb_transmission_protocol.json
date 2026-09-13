@@ -1,0 +1,13 @@
+{
+  "url": "https://cpcb.gov.in/upload/caaqm/Protocol_CAAQM.pdf",
+  "retrieved": "2026-09-13",
+  "document_date": "2015-04-30",
+  "sha256": "cad9b4a6280c8d7585955d32f26a1165b349670ce5d7b811d1cadb8191904cf1",
+  "findings": [
+    "15-minute averages with explicit Date from and Date to in Annexure I",
+    "Calibration or maintenance flag 1 readings excluded from averaging",
+    "Timezone not specified in the three-page protocol"
+  ],
+  "limitation": "Transmission format does not establish historical public-export timestamp meaning or certify the mirror flags. Verify original exports before joining pollutants.",
+  "visual_check": "Page 3 Annexure I rendered and inspected"
+}

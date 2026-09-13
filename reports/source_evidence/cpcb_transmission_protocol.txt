@@ -1,0 +1,110 @@
+CPCB IT Division 
+30.04.2015 
+Protocol for Data Transmission from CAAQM Stations Existing as on Date 
+1. Data Format 
+Data file on real time basis having 15 minutes average values in a prescribed format 
+attached at Annexure-I should be generated at the station for which Instrument Supplier 
+is responsible. 
+File should be updated after every 15 minutes. 
+Data intervals like 00:15, 00:30, 00:45, 01:00 should be fixed at the station. 
+Station file name should be exactly as the name of the station to be displayed on the 
+web portal. i.e. Sanathnagar, NehruNagar. Here precaution is to be taken that no space 
+between words should be given or no special characters should be used. 
+. File should be recorded in a folder c:\data\sanathnagardata.txt  
+File should allow data appending sequentially. 
+Date of last file record appended in the file should be recorded and data afterwards be 
+placed in the data file. 
+File appending should continue subject to max 97 lines. First in First out mechanism 
+shall be followed in keeping file size to 97 lines. 
+Hence, in the specified folder c: \Data \ there will be a single file which will keep 
+appending as per format attached. 
+Duplicate entry of any data should not be made in the file. 
+System should have capability to create previous record data file for which user will give 
+the date. This is required to have lost data makeup in the final database, if any. 
+2. Data Mapping 
+Protocol for each parameter is fixed as below: 
+1. 15 Minutes average value will be provided by the operator of the CAAQMS 
+2. Each SPCB will have the parameter as mentioned in the table only. Not even a 
+small gap or space is provided other than the mentioned table is acceptable. 
+3. Standard Parameter Naming Protocol and Conversion factors Table 
+Parameters Name Parameter 
+Abbreviations 
+Unit Conversion factors 
+at 25°C 
+Rack Temperature Temp °C 
+Carbon Monoxide CO mg/m 3  1ppm=1.145mg/m 3  
+Sulphur Dioxide SO2 139/m 3  1ppb=2.62pg/m 3  
+Nitric Oxide NO pg/m 3  1ppb=1.23pg/m 3  
+Nitrogen dioxide NO2 pg/m 3  1ppb=1.88pg/m 3  
+Oxides of Nitrogen NOx ppb -- 
+Ozone Ozone Ng/m 3  1ppb=1.96 pg/m 3  
+Particulate Matter less than PM10 pg/rn 3  -- 
+10 Micron size 
+Wind Speed WS m/s -- 
+Wind Direcction WD deg -- 
+Ambient Temperature AT °C 
+Relative Humidity RH cyo -- 
+Barometric Pressure BP mmHg -- 
+Solar Radiation SR W/mt 2  -- 
+Rain Fall RF mm -- 
+Vertical Wind Speed VWS degree -- 
+Particulate Matter less than 
+2.5 micron size 
+PM2.5 pg/rn 3  -- 
+Benzene Benzene pg/m 3  1ppb=3.19pg/m 3  
+Toluene Toluene pg/m 3  1ppb=3.77pg/m 3  
+Xylene Xylene pg/m 3  1ppb=4.34pg/m 3  
+Ethyl Benzene Eth-Benzene 1ppb=4.34pg/m 3  
+M+P_Xylene MP-Xylene 1ppb=4.34pg/rn 3  
+Methane CH4  p9/m 3  1ppb=0.65pg/m 3  
+Ammonia NH3 pg/m 3  1ppb=0.70pg/m 3  
+Formaldehyde HCHO pg/m 3  1ppb=1.23pg/m 3  
+Mercury Hg pg/m 3  1ppb=8.20pg/m 3  
+Note: 1. Any other parameter can be added with the prior approval of IT Division ONLY. 
+4. Internet Connectivity 
+Internet connectivity should be available on 24X7 basis for data transmission with an 
+uptime of 99.9%. For this purpose every CAAQM station should have two kinds of 
+connection: 
+i) Leased Line Circuit of at least 01 Mbps capacity 
+ii) Broad Band connectivity through telephone line. Both facilities should be configured 
+in ready to use condition. If possible auto failover should be created. 
+Note: Connectivity through Datacard is not acceptable except in any special circumstances, 
+where both of these types of connectivities are not available. For such case CPCB IT Division 
+shall be consulted before taking a final decision. 
+5. Other Information: 
+1. Area Map showing station location 
+2. Latitude, Longitude and altitude of the station 
+3. Photo of station along with nearby areas 
+4. One page write-up about the station activities in the vicinity of station including major 
+pollution sources like nearby road, rail, restaurants, generator sets, etc. 
+Annexure — I 
+File Name: sanathnagar 
+1,2,3,4,5,6,7,8, 
+Station name, Parameter, Date from, Date to, Value,calibrationflag,maint flag, Remark, 
+Sanathnagar,CO,27-04-2015 13:00,27-04-2015 13:15,0.2497,0,0,analyserfaulty, 
+Sanathnagar,C0,27-04-2015 13:15,27-04-2015 13:30,0.2470,0,0,analyserfaulty, 
+Sanathnagar,C0,27-04-2015 13:30,27-04-2015 13:45,0.2470,0,0,analyserfaulty, 
+Sanathnagar,C0,27-04-2015 13:45,27-04-2015 14:00,0.2470,0,0,analyserfaulty, 
+Sanathnagar,Ozone,27-04-2015 13:00,27-04-2015 13:15,59.6710,0,0,flowproblem, 
+Sanathnagar,Ozone,27-04-2015 13:15,27-04-2015 13:30,59.5960,0,0,analyserfaulty, 
+Sanathnagar,Ozone,27-04-2015 13:30,27-04-2015 13:45,59.5960,0,0,analyserfaulty, 
+Sanathnagar,Ozone,27-04-2015 13:45,27-04-2015 14:00,59.5960,0,0,analyserfaulty, 
+Sanathnagar,N0,27-04-2015 13:00,27-04-2015 13:15,0.5922,0,0,analyserfaulty, 
+Sanathnagar,N0,27-04-2015 13:15,27-04-2015 13:30,0.4435,0,0,0, 
+Sanathnagar,N0,27-04-2015 13:30,27-04-2015 13:45,0.4435,0,0,0, 
+Sanathnagar,N0,27-04-2015 13:45,27-04-2015 14:00,0.4435,0,0,0, 
+Sanathnagar,So2,27-04-2015 13:00,27-04-2015 13:15,3.5233,0,0,0, 
+Sanathnagar,So2,27-04-2015 13:15,27-04-2015 13:30,3.7278,0,0,0, 
+Sanathnagar,So2,27-04-2015 13:30,27-04-2015 13:45,3.5233,0,0,0, 
+Sanathnagar,So2,27-04-2015 13:45,27-04-2015 14:00,3.7278,0,0,0, 
+Sanathnagar,RT,27-04-2015 13:15,27-04-2015 13:30,33.2260,0,0,0, 
+Sanathnagar,RT,27-04-2015 13:30,27-04-2015 13:45,33.2240,0,0,0, 
+Sanathnagar,AT,27-04-2015 13:45,27-04-2015 14:00,33.0960,0,0,0, 
+Sanathnagar,AT,27-04-2015 14:15,27-04-2015 14:30,33.3740,0,0,0, 
+Sanathnagar,RH,27-04-2015 13:15,27-04-2015 13:30,41.3080,0,0,0, 
+Sanathnagar,PM10,27-04-2015 13:15,27-04-2015 13:30,30.3000,0,1,analyserfaulty, 
+Sanathnagar,PM10,27-04-2015 13:30,27-04-2015 13:45,30.3000,1,0,a nalyserfaulty, 
+Please note: 
+Here 0-zero stand for normal operation of instruments in calibration flag status 
+1- Stands for calibration mode ON and data will not be considered for averaging purpose. 
+Same is true for Maintenance mode where 0-normal and 1-mintenance mode ON 

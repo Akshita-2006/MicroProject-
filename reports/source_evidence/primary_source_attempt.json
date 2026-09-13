@@ -1,0 +1,11 @@
+{
+  "url": "https://airquality.cpcb.gov.in/dataRepository/all_india_stationlist",
+  "purpose": "Verify station identities directly with CPCB",
+  "status": "unavailable",
+  "reason": "HTTPSConnectionPool(host='airquality.cpcb.gov.in', port=443): Max retries exceeded with url: /dataRepository/all_india_stationlist (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain (_ssl.c:1010)')))",
+  "system_trust_retry": {
+    "certificate_verification": true,
+    "http_status": 404,
+    "status": "endpoint_not_found"
+  }
+}

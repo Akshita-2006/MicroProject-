@@ -1,0 +1,6 @@
+{
+  "url": "https://airquality.cpcb.gov.in/ccr_docs/caaqms_list_All_India.pdf",
+  "sha256": "950cfef17f69d8c0533daaec126617aa497247d9ac135ec617271b7ac6c7f299",
+  "matched_stations": 7,
+  "limitation": "Confirms station names and agencies in this list; contains no source IDs, coordinates, timezone, or per-record verification."
+}

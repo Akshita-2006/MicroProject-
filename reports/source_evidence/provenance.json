@@ -1,0 +1,8 @@
+{
+  "repository": "https://api.github.com/repos/Vonter/india-cpcb-aqi",
+  "commit": "a58f47848e678c7cea58a69758343d08d0b49915",
+  "download_url": "https://raw.githubusercontent.com/Vonter/india-cpcb-aqi/a58f47848e678c7cea58a69758343d08d0b49915/data/cpcb-aqi.csv.gz",
+  "remote_sha256": "b046ee614853f96ea24f3e1b94434de3d9b937dfb660af17b849f4e412ff74a3",
+  "local_sha256": "b046ee614853f96ea24f3e1b94434de3d9b937dfb660af17b849f4e412ff74a3",
+  "byte_match": true
+}
