@@ -1,63 +1,27 @@
-# Data Sources Investigation
+# Data used by the project
 
-## Air-Quality Data
+## AQI
 
-### CPCB
+The current forecasts use 2017–2023 hourly AQI from [Vonter/india-cpcb-aqi](https://github.com/Vonter/india-cpcb-aqi), a public archive of CPCB data. The local file matches the saved source version. Seven station names and agencies also match an official CPCB list.
 
-The project synopsis identifies CPCB monitoring-station data as the primary intended source. CPCB is authoritative for Indian air-quality categories and station monitoring.
+These checks do not verify every reading. The archive contains faulty station IDs, and the AQI timezone is assumed to be IST. Station names are used until the IDs can be verified. Source copies, file hashes and attribution notices are in `reports/source_evidence/`.
 
-Implementation note: direct CPCB access may involve repository pages, downloads, or access constraints. If direct extraction is difficult, a CPCB-derived dataset with transparent provenance can be used, but its license and limitations must be documented.
+## Pollutant measurements
 
-### CPCB-Derived Dataset Candidate
+The 2017, 2024 and 2025 releases were downloaded from the same archive. They contain pollutant concentrations, which differ from the AQI number predicted by the current models.
 
-Candidate: `Vonter/india-cpcb-aqi` on GitHub.
+The Delhi subsets contain 1,368,606 rows for 2024 and 1,366,609 for 2025. These include missing values; a row does not necessarily contain a valid measurement. One ten-row Alipur sample matched the official 2025 table. Timezone, broader source checks and recent AQI targets remain unresolved, so these files are not used by the forecasting models.
 
-Observed properties from repository documentation:
+See the [recent data audit](../reports/recent_data_audit.md) for evidence, quality checks and commands. No verified 2026 dataset is available in this project.
 
-- Source: CPCB Data Repository and CPCB AQI Repository.
-- Data forms: 15-minute station-level pollutant measurements and hourly station-level AQI measurements.
-- Available formats: Parquet and compressed CSV releases.
-- License: Open Database License with attribution/share-alike conditions; some individual database contents are copyright CPCB.
-- Usefulness: likely the best reproducible route if releases can be downloaded.
+## Weather
 
-Risk: must inspect the actual downloaded files before selecting Delhi stations, date range, and variables.
+The current dataset uses Open-Meteo historical weather for one Delhi location: temperature, humidity, wind speed and direction, pressure and rainfall. The saved response specifies IST and the units.
 
-### OpenAQ
+All seven stations use this regional weather. It is not a measurement at each pollution station. Historical weather can also be revised after the event, so it does not prove what data would have been available to a live service at that time.
 
-OpenAQ API v3 provides locations, sensors, measurements, and hourly measurements.
+## Source notices and further checks
 
-Important limitation:
+Keep the archive's attribution and database notices with redistributed data. Copies are in `reports/source_evidence/`. OpenAQ and Kaggle were considered during the initial investigation but do not supply the current forecast inputs.
 
-- API access requires an `X-API-Key`.
-- New Delhi location data exists in OpenAQ, but direct API acquisition requires a user-provided key or another allowed download route.
-
-OpenAQ remains useful for provenance and fallback access where key/download is available.
-
-### Kaggle
-
-Kaggle has Delhi PM2.5 datasets sourced from OpenAQ. This is not the preferred primary route because it is a secondary dataset, may require Kaggle credentials, and may include only PM2.5. It can be used only if better sources are blocked and limitations are documented.
-
-## Weather Data
-
-### Open-Meteo Historical Weather API
-
-Open-Meteo provides historical hourly weather variables and supports Delhi coordinates.
-
-Candidate variables:
-
-- temperature_2m
-- relative_humidity_2m
-- wind_speed_10m
-- wind_direction_10m
-- pressure_msl
-- precipitation
-
-Usefulness:
-
-- reproducible API;
-- no manual web export required in normal use;
-- hourly alignment matches the project design.
-
-Risk:
-
-- weather is grid/reanalysis-style data rather than station-specific pollution-site meteorology.
+The [technical methodology](methodology_v2.md) records assumptions and references. The [remaining checklist](remaining_checklist.md) lists checks needed before recent data can be used.

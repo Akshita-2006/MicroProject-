@@ -1,8 +1,22 @@
 # Delhi Pollution Episode Forecasting and Early Warning
 
-A Python research project that forecasts station-level AQI at 1, 6, 12 and 24 hours, builds a complete 24-hour forecast trajectory, and detects sustained pollution episodes with onset, peak, severity, duration and recovery estimates.
+A Python project that predicts air pollution at Delhi monitoring stations for each of the next 24 hours. It estimates when a period of high pollution may start, reach its peak and end.
 
 **Current state:** seven Delhi stations, historical observations from 2017–2023, saved trained models and a Streamlit replay dashboard. It is not a live monitoring feed or an official CPCB advisory. Newer data and broader station coverage remain work in progress.
+
+## Current progress — 14 September 2026
+
+| Area | Current state |
+|---|---|
+| Running forecasts | Seven evaluated stations; historical AQI/weather data from 2017–2023. Dashboard replay dates remain in 2023. |
+| Recent data | 2024 and 2025 pollutant releases downloaded, hash-verified and audited: 1,368,606 and 1,366,609 Delhi rows respectively. Not yet integrated into forecasting. |
+| Station expansion | 31 coverage candidates identified among 39 historical stations; screening reasons are visible in the dashboard. Candidates are not additional trained models. |
+| Official source checks | One official Alipur sample matched all 66 numeric and 14 missing cells at interval-start clock labels. Broader station/year verification and timezone remain unresolved. |
+| Preprocessing and tests | Interval-end pollutant aggregation implemented but not connected to training. Latest full test suite: 17 passing tests. |
+| Remaining work | Verified recent AQI targets, 2026 acquisition, source/timezone checks, pollutant/weather integration, expanded training and untouched-period evaluation. |
+| Last recorded access failure | CPCB downloads failed; the viewer later showed a blank CAPTCHA and API errors. |
+
+See [current project status](reports/project_status.md) for the complete evidence and [remaining checklist](docs/remaining_checklist.md) for next steps. The results below are unchanged 2023 retrospective scores, not results from the newly acquired data.
 
 ## Quick start
 
@@ -45,25 +59,25 @@ The launcher prefers the repository's `.venv` interpreter, otherwise uses `pytho
 3. Open **Forecast & episode** for the observed AQI, four forecast horizons, uncertainty bands, episode details and forecast download.
 4. Open **Historical trends**, **Model evidence**, **Station comparison** or **Methodology** for the supporting analysis.
 
-For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use history through the selected issue time. Incomplete past history uses the separately validated fallback when available; missing current AQI causes abstention. Recovery beyond the forecast window is shown as unobserved, not invented.
+For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use history through the selected issue time. Incomplete past history uses the separately validated fallback when available; no forecast is made if the current AQI is missing. If AQI is not predicted to fall below 301 within 24 hours, its end time is shown as unknown.
 
 ## What is implemented
 
 - Audit of 39 stations, with seven selected using training-period coverage and conflicting-record checks.
 - Hourly calendars, missingness and continuity reports, duplicate/range checks and exploratory analysis.
 - Station-local AQI lags, rolling statistics, time features and regional weather inputs.
-- Persistence and seasonal-naive baselines, Random Forest and XGBoost comparisons, five feature ablations and bounded time-aware hyperparameter tuning.
+- Persistence and seasonal-naive baselines, Random Forest and XGBoost comparisons, five input combinations and a limited search for model settings using earlier periods for training and later periods for validation.
 - Direct models for all 24 future hours; separately trained missing-history fallback models.
 - Sustained episode detection: AQI at least 301 for three consecutive hours. Three hours is a research policy, not an official CPCB persistence rule.
-- Episode matching, warning confusion matrices, timing errors, sample counts and censoring.
-- Nominal 90% marginal prediction intervals and global tree feature importance.
-- Saved-model inference, reproducible evaluation/report commands and twelve automated tests.
+- Comparison of predicted and observed episodes, correct and missed warnings, timing errors and counts of cases with known start/end times.
+- Prediction ranges targeting 90% coverage of individual hourly readings, plus a chart of the inputs the model uses most.
+- Saved-model inference, reproducible evaluation/report commands and seventeen automated tests.
 
 Current stations: Shadipur, DTU, NSIT Dwarka, ITO, IHBAS Dilshad Garden, Sirifort and Mandir Marg.
 
 ## Current results
 
-Combined complete-history and missing-history system, pooled 2023 retrospective evaluation:
+Results for the main and backup models across all seven stations in 2023. MAE is average error in AQI points; RMSE gives more weight to large errors. Lower is better for both. R² measures fit, not percentage accuracy:
 
 | Horizon | MAE (AQI points) | RMSE | R² |
 |---|---:|---:|---:|
@@ -72,9 +86,9 @@ Combined complete-history and missing-history system, pooled 2023 retrospective 
 | 12 hours | 52.50 | 72.72 | 0.656 |
 | 24 hours | 54.92 | 75.48 | 0.628 |
 
-Daily any-episode warning precision/recall/F1: **95.3% / 72.8% / 82.6%**. Stricter individual episode-segment precision/recall/F1: **77.0% / 60.9% / 68.0%**.
+Precision is the share of predicted warnings that were correct; recall is the share of actual episodes detected. F1 combines the two. Daily warning precision/recall/F1: **95.3% / 72.8% / 82.6%**. Stricter individual episode-segment precision/recall/F1: **77.0% / 60.9% / 68.0%**.
 
-Average onset/peak/recovery errors on matched, evaluable segments are approximately 2.0/3.9/3.2 hours. Duration error is 2.2 hours, but only 28 uncensored cases support that estimate.
+Average onset/peak/recovery errors on matched, evaluable segments are approximately 2.0/3.9/3.2 hours. Duration error is 2.2 hours, but only 28 cases with fully known starts and ends support that estimate.
 
 Forecast availability is **94.6%** of 2,548 scheduled daily windows; **74.3%** are evaluable for episodes after requiring future observations. Availability is not accuracy. Nominal 90% interval coverage is about 89.0% at 1 hour and 85.5% at 24 hours.
 
@@ -177,6 +191,7 @@ MicroProject/
 │   │   └── combined_system/          # Current combined metrics and predictions
 │   └── logs/                         # Recorded experiment execution logs
 ├── reports/
+│   ├── project_status.md             # Current results and remaining work
 │   ├── final_report.md               # Engineering report
 │   ├── missing_history_fallback.md   # Combined-system results and limitations
 │   ├── current_state_audit.md        # Audit of inherited prototype
@@ -185,7 +200,8 @@ MicroProject/
 │   ├── figures/                      # Generated figures
 │   └── source_evidence/              # Source hashes, licenses and official documents
 ├── docs/
-│   ├── methodology_v2.md             # Data, splits, methods and limitations
+│   ├── methodology_guide.md          # Plain-language dashboard explanation
+│   ├── methodology_v2.md             # Technical details and assumptions
 │   ├── acceptance.md                 # Requirement-by-requirement status
 │   └── remaining_checklist.md        # Outstanding work, including newer data/stations
 ├── tests/                            # Temporal, episode, replay and fallback tests
@@ -200,7 +216,7 @@ AQI comes from [Vonter/india-cpcb-aqi](https://github.com/Vonter/india-cpcb-aqi)
 
 Weather comes from the [Open-Meteo historical API](https://open-meteo.com/en/docs/historical-weather-api), using one regional Delhi grid and IST timestamps.
 
-The mirror's station IDs are faulty; names are used provisionally. Seven station names/agencies were matched to an official CPCB station list, but timestamp timezone and export semantics remain unresolved. AQI alignment currently assumes IST. Pollutants have not been joined because their timestamp semantics are ambiguous. Historical weather does not establish operational input availability.
+The mirror's station IDs are faulty; names are used provisionally. Seven station names/agencies were matched to an official CPCB station list, but AQI timezone and broader export semantics remain unresolved. A bounded Alipur pollutant comparison supports interval-start labels for that sample; see the [primary comparison](reports/source_evidence/alipur_official_2025_comparison.json). AQI alignment currently assumes IST. Pollutants have not been joined because their timestamp semantics are ambiguous. Historical weather does not establish operational input availability.
 
 The old station rule requires at least 85% coverage over the full 2017–2021 calendar, which disadvantages later-starting records. The latest official repository inspection lists 2026 Anand Vihar files, but these are not yet integrated. See the [remaining checklist](docs/remaining_checklist.md).
 
@@ -214,15 +230,26 @@ AQI 301–400 is Very Poor and 401–500 is Severe. The model has global feature
 | Port 8502 is already in use | Open the existing server if it is this app, or launch with another port such as `--server.port 8503`. |
 | Browser cannot connect | Check that the Streamlit terminal is still running and use its printed URL. |
 | Missing data/model or incomplete-run message | Restore the required saved artifacts, or rebuild after supplying the raw inputs. |
-| Forecast unavailable for a date | Check current AQI availability; abstention is expected for missing current inputs. |
+| Forecast unavailable for a date | Check current AQI availability; no forecast can be made without current readings. |
 | PowerShell blocks the launcher script | Use the direct Python/Streamlit command above; the launcher is optional. |
 | Model loading fails after changing packages | Use the recorded versions and matching run artifacts; otherwise retrain and reevaluate in the new environment. |
 
 ## Reports to read
 
+- [Current project status](reports/project_status.md)
 - [Engineering report](reports/final_report.md)
+- [Recent data audit](reports/recent_data_audit.md)
 - [Current combined results](reports/missing_history_fallback.md)
-- [Methodology](docs/methodology_v2.md)
+- [How the forecasts work](docs/methodology_guide.md)
+- [Technical methodology](docs/methodology_v2.md)
 - [Acceptance status](docs/acceptance.md)
 - [Remaining work](docs/remaining_checklist.md)
 - [Validation record](reports/validation.md)
+- [Documentation audit](reports/documentation_audit.md)
+
+### Station expansion audit
+
+Run `python -m src.analysis.reassess_stations` using your project environment to generate the 39-station coverage screen. It identifies 31 candidates using 2019–2021 observations only; seven currently have evaluated forecast models. The dashboard Station comparison tab shows the screening reasons. Candidate status is not model validation. New-period evaluation boundaries are recorded in `docs/expanded_evaluation_protocol.json`; training on recent data remains gated on source verification.
+
+Recent 2024–2025 pollutant release acquisition and quality findings are documented in [recent data audit](reports/recent_data_audit.md). These staged observations are not yet integrated into forecasts; the dashboard date range and reported model scores remain retrospective.
+

@@ -17,7 +17,7 @@ def main():
     tp,fp,fn,tn=[int(warnings[c].sum()) for c in ['true_positive','false_positive','false_negative','true_negative']]
     text=f'''# Missing-history fallback evaluation
 
-The complete-history model remains unchanged. When a 73-hour calendar window contains missing past values, a separately trained XGBoost fallback uses native missing-value handling. It never fills or fabricates target values, and still abstains when current AQI is missing. Validation chooses between native missing handling with and without missingness indicators, using incomplete-history MAE at each required horizon. The nearest required horizon supplies the configuration for intermediate hours. Calibration uses missing-history July–December 2022 cases separately for each forecast hour.
+The complete-history model remains unchanged. When a 73-hour calendar window contains missing past values, a separately trained XGBoost fallback uses native missing-value handling. Target values are not filled in, and no forecast is made when current AQI is missing. Validation chooses between native missing handling with and without missingness indicators, using incomplete-history MAE at each required horizon. The nearest required horizon supplies the configuration for intermediate hours. Calibration uses missing-history July–December 2022 cases separately for each forecast hour.
 
 ## What changed and why
 

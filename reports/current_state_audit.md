@@ -1,3 +1,5 @@
+> Historical audit of the inherited prototype, preserved as a baseline. For the current implemented state and remaining work, read [project status](project_status.md).
+
 # Current-state audit — 12 September 2026
 
 The inherited project is a working Shadipur regression demonstration. Its raw inputs, acquisition utilities, initial EDA, model families, and Streamlit foundation are reusable. Existing result files are historical prototype outputs, not valid final comparisons.

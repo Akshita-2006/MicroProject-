@@ -21,3 +21,11 @@ The mirror parser assigns UTC to naive strings; this does not establish conversi
 ## Authorized repository access — 13 September 2026
 
 The user explicitly authorized CAPTCHA submission. The CAPTCHA was accepted and the repository filters and file listing became available. The observed default selections were Station Level, Delhi, Delhi, Anand Vihar (DPCC), year 2026, Hourly. The table listed January through August. A January download button was clicked, but no local file was confirmed; do not count this as acquired/validated observations. This verifies current file-list availability, not timestamp semantics or completeness of the files. The previous access-permission blocker has been cleared for this challenge.
+
+
+## 14 September continuation
+
+A fresh CAPTCHA confirmation was requested and granted. On subsequent inspection the CAPTCHA was already absent and the repository was accessible, so no additional challenge was submitted by the agent. The visible station list contained 46 options. Patparganj 2025 lists all twelve months; 2026 lists January–August. Download actions for Anand Vihar 2026 and Patparganj 2025/2026 produced no confirmed download. A 15-second browser download-event wait expired on two attempts. The browser console also contains a decryption failure (null salt); this is diagnostic evidence, not proof of the underlying cause of every failed download. Access permission is no longer the blocker; acquisition is not yet successful.
+
+
+The alternate official Advanced Search route (`/ccr/#/caaqm-dashboard-all/advance-search`) successfully displayed historical data for Alipur on 1–2 January 2025. This provides a working route for bounded primary comparisons despite failed repository downloads. The sample comparison is saved alongside this file. A later session reset required a new CAPTCHA; user approval was received, but the image was initially blank.

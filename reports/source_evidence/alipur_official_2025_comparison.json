@@ -1,0 +1,49 @@
+{
+  "source_url": "https://airquality.cpcb.gov.in/ccr/#/caaqm-dashboard-all/advance-search",
+  "retrieved_date": "2026-09-14",
+  "station": "Alipur, Delhi - DPCC",
+  "criteria": "15M",
+  "query": "01-01-2025 00:00 through 02-01-2025 23:59",
+  "capture": "First 10 displayed rows transcribed from structured browser DOM; empty cells preserved as missing",
+  "comparisons": [
+    {
+      "hypothesis": "same_clock_interval_start",
+      "shift_minutes": 0,
+      "matched_timestamp_rows": 10,
+      "comparable_numeric_cells": 66,
+      "equal_numeric_cells": 66,
+      "matching_missing_cells": 14
+    },
+    {
+      "hypothesis": "interval_end",
+      "shift_minutes": 15,
+      "matched_timestamp_rows": 10,
+      "comparable_numeric_cells": 60,
+      "equal_numeric_cells": 19,
+      "matching_missing_cells": 13
+    },
+    {
+      "hypothesis": "UTC_to_IST_hypothesis",
+      "shift_minutes": -330,
+      "matched_timestamp_rows": 0,
+      "comparable_numeric_cells": 0,
+      "equal_numeric_cells": 0,
+      "matching_missing_cells": 0
+    },
+    {
+      "hypothesis": "IST_to_UTC_hypothesis",
+      "shift_minutes": 330,
+      "matched_timestamp_rows": 10,
+      "comparable_numeric_cells": 66,
+      "equal_numeric_cells": 0,
+      "matching_missing_cells": 1
+    }
+  ],
+  "conclusion": "In this sample mirror timestamps match official Date From clock labels; values are intervals ending 15 minutes later. Treating Date From as an available instantaneous observation would leak the following interval.",
+  "limitations": [
+    "One station and one period only; expand comparison before generalizing",
+    "The official table does not explicitly name its timezone; this comparison alone does not certify IST",
+    "Does not establish latency or source quality-flag filtering"
+  ],
+  "reproduce": "python -m src.data_acquisition.compare_official_sample"
+}

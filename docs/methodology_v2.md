@@ -1,4 +1,4 @@
-# Corrected methodology and preregistered choices
+# Technical methodology
 
 ## Data and provenance
 
@@ -6,13 +6,13 @@ AQI source: [Vonter/india-cpcb-aqi](https://github.com/Vonter/india-cpcb-aqi), a
 
 Station IDs in the inherited AQI file are defective. Normalized station names are the provisional keys. No city-wide representativeness claim is made. Selection requires at least 85% observed valid AQI on the full 2017–2021 hourly calendar and no conflicting duplicates. Later station commissioning is penalized by this fixed-period rule; exclusion does not establish that a station is intrinsically poor. All 39 candidates remain in the quality report. High AQI up to 500 is retained; only negative or above-scale AQI is invalidated, with raw values preserved. Repeated readings are flagged, not automatically removed.
 
-All seven selected names and agencies were subsequently matched to the official [CPCB station list](https://airquality.cpcb.gov.in/ccr_docs/caaqms_list_All_India.pdf), downloaded from the government domain. The PDF, SHA-256 and exact row matches are preserved in `reports/source_evidence` and `official_station_name_matches.csv`. This confirms names, not numeric source IDs or measurement history. The current official historical repository is `https://airquality.cpcb.gov.in/ccr/#/repository/aqi`; its file listing is protected by CAPTCHA, so primary export verification is pending user completion of that step. An independently encountered non-government domain was not accepted as primary identity evidence.
+All seven selected names and agencies were subsequently matched to the official [CPCB station list](https://airquality.cpcb.gov.in/ccr_docs/caaqms_list_All_India.pdf), downloaded from the government domain. The PDF, SHA-256 and exact row matches are preserved in `reports/source_evidence` and `official_station_name_matches.csv`. This confirms names, not numeric source IDs or measurement history. The current official historical repository is `https://airquality.cpcb.gov.in/ccr/#/repository/aqi`; recent file listings were accessible, but downloads failed. One Alipur sample was checked through the official table. A later session showed a blank CAPTCHA and API errors; further verification remains unfinished. An independently encountered non-government domain was not accepted as primary identity evidence.
 
 [CPCB calculation guidance](https://cpcb.gov.in/displaypdf.php?id=bmF0aW9uYWwtYWlyLXF1YWxpdHktaW5kZXgvSG93X0FRSV9DYWxjdWxhdGVkLnBkZg%3D%3D) defines AQI from the largest pollutant sub-index, based on running concentration averages. We forecast the provided dimensionless AQI; we do not reconstruct it from a single instantaneous concentration. Thus hourly AQI persistence is not independent hourly exposure evidence. The mirror does not allow independent verification of every source sub-index.
 
 ## Pollutant investigation
 
-The 2017 pollutant release was actually downloaded and inspected. It contains PM2.5, PM10, NO2, ozone, SO2 and CO, with substantial station-dependent missingness. Shadipur PM10 is entirely absent in this sample. This sample does not justify filling 2018–2023 pollutant features or claiming an evaluated pollutant model.
+The 2017 pollutant release was downloaded and inspected. It contains PM2.5, PM10, NO2, ozone, SO2 and CO, with substantial station-dependent missingness. Shadipur PM10 is entirely absent in this sample. This sample does not justify filling 2018–2023 pollutant features or claiming an evaluated pollutant model.
 
 There is a material timezone concern: [the source parser](https://github.com/Vonter/india-cpcb-aqi/blob/main/parse.py) assigns UTC to timestamp strings with `replace_time_zone`, which is not evidence that the original strings were UTC. The [dictionary](https://github.com/Vonter/india-cpcb-aqi/blob/main/DATA.md) describes them as UTC. Original CPCB timestamp semantics must be verified before joining these observations with AQI. Consequently the primary experiment uses AQI history, not unverified pollutant joins. No pollutant predictive-utility experiment is claimed. The local sample and missingness report make the next investigation reproducible.
 
@@ -26,7 +26,7 @@ Forecast issuance occurs after AQI and weather at t are available. No future wea
 
 Each station has a complete hourly grid. Features are computed separately and concatenated; no inter-station rolling or lag operations occur. No target imputation or future interpolation occurs. Complete cases of the full feature set define a common comparison sample for A–E, preventing ablation from changing evaluation dates. This restricts coverage and can bias evaluation toward well-observed periods; report counts.
 
-Training: 2017–2021. Model/feature selection: January–June 2022. Interval calibration: July–December 2022. Retrospective test: 2023. Every boundary is purged so the target stays inside its assigned split. The test period was already examined by the inherited prototype; it cannot honestly be called a pristine external holdout.
+Training: 2017–2021. Model/feature selection: January–June 2022. Interval calibration: July–December 2022. Retrospective test: 2023. Every boundary is purged so the target stays inside its assigned split. The test period was already examined by the inherited prototype; a later, previously unused test period is still needed.
 
 Three predefined XGBoost parameter configurations cover learning rate, tree count/depth, child weight, row/column subsampling, gamma and L1/L2 regularization. Two expanding development folds validate on 2020 and 2021; every fourth eligible row is used during this limited-budget search. The mean fold MAE selects the tuning candidate. Five full-training ablations, the chosen tuning candidate, Random Forest and two baselines are compared on 2022 selection MAE separately by horizon. Test outcomes never select the model. This is a bounded search, not exhaustive optimization.
 
@@ -56,7 +56,16 @@ The combined service keeps the original forecast on complete history and uses th
 
 Absolute residuals from the separate calibration period define nominal 90% marginal intervals using a finite-sample quantile. Time dependence and seasonality violate simple exchangeability assumptions; report realized coverage rather than claiming guaranteed 90% reliability. These intervals are not event probabilities or simultaneous 24-hour bands. Calibration is pooled across stations, so per-station test coverage is essential.
 
-Tree feature importances describe the fitted model's usage and can be biased by correlation. They are global, horizon-specific associations, not causal explanations or local SHAP values. Baselines have no tree importance. No invented confidence percentages or causal weather claims are displayed.
+Tree feature importances describe the fitted model's usage and can be biased by correlation. They are global, horizon-specific associations, not causal explanations or local SHAP values. Baselines have no tree importance. The dashboard does not assign a probability to an episode.
 
 
 Official transmission-format evidence and unresolved interval-boundary/quality-flag semantics are recorded in [source access investigation](../reports/source_evidence/repository_access.md). The 2015 protocol does not establish the timezone of the mirrored public exports.
+
+
+## Primary interval comparison — 14 September 2026
+
+The official CPCB Advanced Search table for Alipur, 1 January 2025, was compared against the staged 2025 mirror. Ten consecutive rows across eight pollutants matched exactly: 66 numeric values and 14 missing cells. The mirror labels match the displayed `Date From` (interval start); `Date To` is 15 minutes later. Source rows and alternative alignment counts are preserved in `reports/source_evidence/alipur_official_2025_sample.csv` and `alipur_official_2025_comparison.json`.
+
+This is bounded primary-source evidence, not certification of all stations or time periods. The table does not explicitly name its timezone and does not establish publication latency or quality-flag filtering. The staged datasets remain outside model training.
+
+`src/preprocessing/pollutant_intervals.py` provides interval-end hourly aggregation for a caller-specified source clock timezone. It requires an explicit timezone, rejects duplicate/off-grid records, keeps missing quarters, records per-variable counts, and permits an explicit publication delay. Its default three-of-four completeness threshold is a research preprocessing choice, not a CPCB rule. It is not connected to the current model pipeline until the remaining source checks pass. Three tests verify interval-boundary causality, insufficient-data handling and ambiguous-input rejection.

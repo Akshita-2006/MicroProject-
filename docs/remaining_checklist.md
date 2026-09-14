@@ -1,30 +1,32 @@
-# Remaining work — 13 September 2026
+# Execution checklist — 14 September 2026
 
-## Data recency and station coverage
-- [ ] Acquire and audit 2024–2025 AQI/pollutant data and available 2026 observations. Do not treat 2026 as a complete year.
-- [ ] Verify official export timestamps, timezone, interval boundaries, station IDs and quality flags against the inherited mirror.
-- [ ] Reassess all available Delhi stations using coverage within their operating periods and recent common windows, with explicit minimum history requirements.
-- [ ] Include major locations where data support reliable models; show unavailable/excluded stations with reasons. The old 85% rule over the entire 2017–2021 calendar is not a current network-coverage policy.
-- [ ] Evaluate PM2.5, PM10, NO2, O3, SO2 and CO for availability and predictive benefit after source validation.
-- [ ] Update weather through the same period and evaluate station-specific weather alignment; distinguish retrospective weather from inputs actually available at issue time.
+The project is partly complete. See [current status](../reports/project_status.md) and [acceptance evidence](acceptance.md). Current model outputs remain seven-station 2023 retrospective results.
 
-## Experiments and scientific validation
-- [ ] Freeze the new train/selection/calibration/untouched-test periods before examining new-period model scores. Preserve original retrospective results.
-- [ ] Refit baselines and candidate models on the expanded verified data, repeat feature ablations and time-aware tuning, and evaluate each station/horizon.
-- [ ] Recalibrate intervals and measure coverage on the new test period, separately for complete and incomplete histories.
-- [ ] Re-evaluate same-origin episode detection, warning errors and onset/peak/duration/recovery timing. Report censoring and sample sizes; short trajectories cannot establish full multi-day episode duration.
-- [ ] Decide from evidence whether sequence models, recursive forecasts or local explanations add enough value; do not present these unexecuted options as completed experiments.
+## Completed
 
-## Product and delivery
-- [ ] Update dashboard dates and station inventory from validated artifacts, with source freshness, history limits and station exclusion reasons.
-- [ ] If current early warning is required, implement an authorized live/as-of data feed and validate latency, missing inputs and forecast issuance. Current dashboard is historical replay.
-- [ ] Regenerate the report, quality tables, dependency/code/data manifests and acceptance checklist after expanded experiments.
-- [ ] Run inference/leakage tests and browser checks for the expanded system, then audit all original requirements before declaring completion.
+- [x] Audit inherited prototype and 39 historical AQI stations; build seven-station 2017–2023 dataset and quality/EDA reports.
+- [x] Execute historical baselines, RF/XGBoost comparisons, bounded tuning, five feature ablations and 24-hour direct forecasts.
+- [x] Execute missing-history fallback, interval calibration, sustained episode detection, event/timing/warning evaluation and global feature importance.
+- [x] Build historical replay dashboard and portable repository setup instructions.
+- [x] Download/hash-verify/audit 2024–2025 mirror pollutant releases: 1,368,606 and 1,366,609 Delhi rows respectively.
+- [x] Reassess training-era coverage: 31 candidates among 39 archived stations; display screening reasons in dashboard.
+- [x] Record expanded train/selection/calibration/external-test periods before new-period model scores.
+- [x] Capture and compare one official Alipur sample: 66 numeric values and 14 missing cells match interval-start clock labels.
+- [x] Implement interval-end aggregation helper with explicit timezone and missing-quarter handling; keep it outside training pending source validation.
+- [x] Pass 17 automated tests; verify station-audit dashboard with Streamlit AppTest.
 
-## Completed foundation
-- [x] Audit of 39 stations; seven-station retrospective AQI/weather dataset and data-quality reports.
-- [x] 1/6/12/24-hour regression evaluation, 24-hour trajectories, baselines, RF/XGBoost comparisons, bounded tuning and feature ablations.
-- [x] Gap-aware sustained episode detection, timing metrics, warning evaluation, calibrated marginal intervals and global feature importance.
-- [x] Validation-selected missing-history fallback; 94.6% scheduled daily forecast availability in the evaluated 2023 sample. This is availability, not prediction accuracy.
-- [x] Saved inference pipeline, twelve passing automated tests, dashboard and reproducible engineering reports.
-- [x] User-approved CPCB CAPTCHA submitted successfully on 13 September 2026. Repository UI lists Anand Vihar hourly AQI files for January–August 2026; downloaded file contents are not yet verified.
+## Partial or outstanding — in dependency order
+
+- [ ] Restore official export/viewer access; the last session showed a blank CAPTCHA and API errors.
+- [ ] Expand primary comparisons to additional stations/periods; establish station IDs, timezone, interval boundaries, quality filtering and reporting latency. One sample is not broad verification.
+- [ ] Obtain recent AQI targets or validate their construction; acquire available 2026 observations.
+- [ ] Integrate verified pollutant data and aligned recent weather; evaluate station-specific weather and actual as-of availability.
+- [ ] Finalize an expanded model-ready dataset and defensible station roster; candidate status alone does not enable forecasts.
+- [ ] Train/tune/compare expanded models and pollutant ablations using the recorded evaluation protocol; recalibrate uncertainty.
+- [ ] Execute untouched-period 2025/2026 forecast, episode, warning and timing evaluation with sample sizes and censoring.
+- [ ] Decide on sequence models, recursive forecasts and local explanations from validation evidence; record any justified deferral.
+- [ ] Update dashboard forecast dates/stations only after new model artifacts are validated.
+- [ ] Implement and validate current/as-of feeds if present-day early warning is required; current dashboard remains historical replay.
+- [ ] Regenerate final reports/manifests, run final integration/browser checks and audit all original requirements before declaring completion.
+
+Source acquisition/audit commands and evidence: [recent data audit](../reports/recent_data_audit.md). Reproducible primary comparison: `python -m src.data_acquisition.compare_official_sample`. Expanded experiment boundaries: [protocol](expanded_evaluation_protocol.json).

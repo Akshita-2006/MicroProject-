@@ -1,0 +1,19 @@
+{
+  "status": "planned-and-frozen-before-new-period-model-scores; source gate not passed",
+  "training_end": "2023-12-31 23:00",
+  "selection_start": "2024-01-01 00:00",
+  "selection_end": "2024-06-30 23:00",
+  "calibration_start": "2024-07-01 00:00",
+  "calibration_end": "2024-12-31 23:00",
+  "primary_external_test": "2025-01-01 through 2025-12-31",
+  "secondary_external_test": "available 2026 complete periods; no tuning on this period",
+  "required_gates": [
+    "Verify station identity and historical export semantics",
+    "Resolve timestamp timezone and interval boundary",
+    "Verify units, quality flags, hourly aggregation and target construction",
+    "Audit training station coverage without using external-period forecast scores"
+  ],
+  "selection_rule": "Use selection period only for features, hyperparameters and model choices; fixed conformal calibration after selection; purge labels crossing each split boundary",
+  "test_policy": "Do not tune after inspecting 2025/2026 scores; any subsequent revision must be identified as exploratory and needs a new external period",
+  "source_note": "No new-period model scores computed at protocol creation; source quality checks may inspect coverage without using predictive performance"
+}

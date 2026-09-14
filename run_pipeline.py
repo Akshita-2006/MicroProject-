@@ -14,6 +14,7 @@ COMMANDS = [
     [PYTHON, "src/preprocessing/prepare_aqi_long.py"],
     [PYTHON, "src/preprocessing/prepare_weather.py"],
     [PYTHON, "-m", "src.analysis.audit_dataset"],
+    [PYTHON, "-m", "src.analysis.reassess_stations"],
     [PYTHON, "-m", "src.analysis.extended_quality"],
     [PYTHON, "-m", "unittest", "discover", "-s", "tests"],
     [PYTHON, "-m", "src.models.run_episode_system"],

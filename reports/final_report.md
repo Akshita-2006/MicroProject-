@@ -1,6 +1,74 @@
 # Delhi Pollution Episode Forecasting — Engineering Report
 
-Generated from completed corrected-pipeline artifacts. No example values are substituted for measurements.
+## Current completion status — 14 September 2026
+
+**Overall: partially complete; further source verification is blocked by CPCB access failures.** The working deliverable is a seven-station historical AQI forecasting and episode-warning prototype. Recent pollutant data has been acquired and audited, but it is not integrated into the saved models. No 2024–2026 model performance is claimed.
+
+## Completed and verified
+
+| Work | Evidence and scope |
+|---|---|
+| Historical modelling dataset | Seven stations, 2017–2023 AQI and regional weather; quality audit of 39 stations. |
+| Forecasting and experiments | Persistence, seasonal naive, Random Forest and XGBoost; bounded time-aware tuning, five feature ablations, 1/6/12/24h evaluation and 24 hourly trajectory models. |
+| Pollution episode detection | Sustained-event detection, severity/onset/peak/duration/recovery, unknown boundaries caused by missing readings, one-to-one matching and daily warning evaluation. |
+| Missing-history fallback | Backup model for gaps in past readings. Forecasts were produced for 94.6% of scheduled daily windows; 74.3% had enough future readings to score episodes. These are coverage figures, not accuracy. |
+| Uncertainty and explanation | Prediction ranges for individual hours and a chart of model inputs. These do not explain pollution causes or give episode probabilities. |
+| Recent data acquisition | 2024: 1,368,606 Delhi rows, 39 station IDs. 2025: 1,366,609 rows, 40 IDs. Both public mirror release hashes verified; data quality tables generated. |
+| Expansion coverage screen | 31 candidates among 39 archived AQI stations using 2019–2021 data only. Candidate status does not mean a trained or validated model. |
+| Evaluation design | Expanded split recorded before new-period model scores: train through 2023; selection/calibration in separate halves of 2024; external tests planned for 2025 and available 2026. |
+| Dashboard and documentation | Historical replay, forecast/episode plots, model evidence, station comparison with expansion reasons, portable public-repository setup instructions. |
+| Automated validation | Latest full suite: 17 tests passed. Streamlit application check passed after the station-audit view was added; the later interval helper is not connected to the dashboard. |
+
+## Partial work — not yet accepted as complete
+
+- **Source verification:** local AQI archive matched to the pinned mirror; seven station names/agencies matched to an official CPCB PDF. Defective AQI IDs and timezone assumptions remain unresolved.
+- **Official pollutant comparison:** ten Alipur rows from 1 January 2025 matched 66 numeric and 14 missing cells. Mirror clock labels match official interval starts. This proves only that sample, not all stations, years, timezone or reporting latency.
+- **Pollutant time aggregation:** implemented and tested with explicit caller-specified timezone, interval-end labels, missing-quarter counts and optional publication delay. It remains outside training pending broader source checks. The three-of-four completeness default is a research choice.
+- **Recent data:** 2024–2025 pollutant releases are staged for audit, not model-ready. They contain 15-minute concentrations, not the AQI target used by current models. No verified 2026 observations have been acquired.
+- **Station coverage:** seven evaluated stations remain forecastable. The 31 candidates are shown in the audit, not added to the forecast selector.
+
+## Current model results — unchanged 2023 retrospective evaluation
+
+| Horizon | MAE (AQI points) | RMSE | R² |
+|---|---:|---:|---:|
+| 1h | 26.06 | 43.85 | 0.874 |
+| 6h | 48.95 | 68.40 | 0.695 |
+| 12h | 52.50 | 72.72 | 0.656 |
+| 24h | 54.92 | 75.48 | 0.628 |
+
+Daily any-episode warning precision/recall/F1: 95.3% / 72.8% / 82.6%. Individual episode-segment precision/recall/F1: 77.0% / 60.9% / 68.0%. Mean onset/peak/recovery errors on matched evaluable segments: 2.0 / 3.9 / 3.2 hours. Duration error is 2.2 hours on only 28 uncensored cases; that evidence is weak.
+
+These combined results cover a broader population than the primary complete-history results in the engineering report. Do not compare different populations as a pure accuracy gain. The inherited prototype already inspected 2023; a truly untouched later test remains outstanding.
+
+## Remaining work, in execution order
+
+1. Restore usable official source access and expand station/period comparisons. Establish timezone, station identity, interval boundary and quality/latency semantics.
+2. Obtain recent AQI targets or validate their derivation from concentrations; acquire available 2026 observations. Do not treat 2026 as a complete year.
+3. Complete source-audited pollutant/weather integration, including recent and station-specific weather assessment, and freeze the expanded model-ready dataset and station roster.
+4. Execute expanded baseline/model comparisons, feature ablations, time-aware tuning and recalibration using the recorded split. Test pollutant usefulness rather than assuming it.
+5. Evaluate untouched 2025/2026 periods: station/horizon errors, interval coverage, episode/warning scores, timing, censoring and failure cases. Document any deviation from the recorded evaluation design before scoring.
+6. Update forecastable stations/dates from newly validated artifacts; implement and validate as-of feeds if present-day early warning is required. Current dashboard is replay only.
+7. Assess optional extensions (sequence/recursive models, local explanations) on validation evidence; document any decision not to implement them. They are not completed experiments.
+8. Regenerate final results, manifests and reports; rerun relevant tests/browser checks; complete the original requirement-by-requirement acceptance audit.
+
+## Current blocker
+
+CPCB monthly/yearly download actions did not produce files. Its alternate Advanced Search table worked for the saved Alipur sample, but a later session reset showed a blank CAPTCHA even after refresh and reported API errors. A working official export or restored viewer is needed for broader verification.
+
+## Evidence
+
+- [Engineering report](final_report.md) and [combined results](missing_history_fallback.md)
+- [Recent data audit](recent_data_audit.md)
+- [Primary sample comparison](source_evidence/alipur_official_2025_comparison.json)
+- [Validation record](validation.md)
+- [Acceptance matrix](../docs/acceptance.md)
+- [Execution checklist](../docs/remaining_checklist.md)
+- [Expanded evaluation protocol](../docs/expanded_evaluation_protocol.json)
+
+
+---
+
+Generated from saved experiment results. The current status below includes the backup model; sections 1–15 describe the original seven-station model evaluation.
 
 ## 1. What was inherited
 
@@ -8,11 +76,11 @@ A Shadipur-only AQI/meteorology prototype, 2017–2023 raw files, initial EDA, p
 
 ## 2. What changed
 
-Calendar-complete station series, correct current-AQI persistence, station-isolated features, fixed purged calendar splits, common ablation samples, actual validation-driven saved models, 24 direct hourly forecasts, sustained events with censoring, one-to-one event matching, daily warning confusion matrices, calibrated intervals, global feature importance, replay inference and a redesigned dashboard. Legacy outputs remain outside the v2 folder.
+Calendar-complete station series, correct current-AQI persistence, station-isolated features, fixed purged calendar splits, common ablation samples, models chosen on validation data, 24 direct hourly forecasts, sustained events with censoring, one-to-one event matching, daily warning confusion matrices, calibrated intervals, global feature importance, replay inference and a redesigned dashboard. Legacy outputs remain outside the v2 folder.
 
 ## 3. Dataset and source audit
 
-All 39 Delhi station names were audited. The corrected panel contains 429,408 hourly rows over seven years for 7 selected stations. Raw input SHA-256 values and actual weather units/coordinates are recorded in the data manifest. The AQI mirror claims CPCB provenance; defective AQI IDs and uncertified timestamp semantics remain explicit limitations. Source AQI is not independently reconstructed. The local AQI bytes were verified against pinned source commit a58f47848e678c7cea58a69758343d08d0b49915. A direct CPCB metadata request initially failed certificate verification; a retry using default system certificate trust reached the server but returned HTTP 404; the request and error are saved in reports/source_evidence/primary_source_attempt.json. TLS checks were not disabled. Further investigation successfully retrieved the official government-domain station-list PDF and matched all seven selected station names and agencies. The current AQI repository route is accessible but requires CAPTCHA verification before historical files are shown; primary export inspection is pending that user step.
+All 39 Delhi station names were audited. The corrected panel contains 429,408 hourly rows over seven years for 7 selected stations. Raw input SHA-256 values and actual weather units/coordinates are recorded in the data manifest. The AQI mirror claims CPCB provenance; defective AQI IDs and uncertified timestamp semantics remain explicit limitations. Source AQI is not independently reconstructed. The local AQI bytes were verified against pinned source commit a58f47848e678c7cea58a69758343d08d0b49915. A direct CPCB metadata request initially failed certificate verification; a retry using default system certificate trust reached the server but returned HTTP 404; the request and error are saved in reports/source_evidence/primary_source_attempt.json. TLS checks were not disabled. Further investigation successfully retrieved the official government-domain station-list PDF and matched all seven selected station names and agencies. Authorized repository access showed recent file listings, but download actions did not yield files. The alternate Advanced Search table supplied one Alipur sample matching 66 numeric values and 14 missing cells at interval-start clock labels. Broader verification remains incomplete. The last recorded viewer session showed a blank CAPTCHA and API errors.
 
 Shadipur missingness is 4.664% on the full calendar, rather than the prototype's 1.82% among retained rows. Impossible AQI outside 0–500 is flagged; high valid pollution is retained. Missingness by station/year/variable, duplicate conflicts, constant sequences and extreme values are in reports/tables/v2.
 
@@ -32,7 +100,7 @@ Selection was fixed by training-period coverage ≥85% and absence of conflictin
 
 ## 5. Pollutants and weather
 
-The 2017 pollutant release was downloaded and inspected, including all six requested pollutants. Per-station diagnostics and correlations were generated. Shadipur PM10 is entirely absent in that sample. The upstream parser assigns UTC to timestamp strings without establishing their original timezone; joining this sample risks a 5.5-hour alignment error. The primary model therefore excludes unverified pollutant observations. Predictive usefulness of these pollutants has **not** been evaluated.
+The 2017 pollutant release was downloaded and inspected, including all six requested pollutants. Per-station diagnostics and correlations were generated. Shadipur PM10 is entirely absent in that sample. The upstream parser assigns UTC to timestamp strings without establishing their original timezone; joining this sample risks a 5.5-hour alignment error. The 2024 and 2025 releases have since been downloaded, hash-verified and audited (1,368,606 and 1,366,609 Delhi rows; 39 and 40 station IDs). One official Alipur comparison supports interval-start labels for that sample, but does not certify timezone. An interval-safe aggregation helper is implemented and tested but not connected to training. The primary model therefore excludes unverified pollutant observations. Predictive usefulness of these pollutants has **not** been evaluated.
 
 Weather uses the existing Open-Meteo Delhi grid: temperature °C, humidity %, wind km/h and degrees, pressure hPa and precipitation mm. The payload states Asia/Kolkata and offset 19,800 seconds. One regional grid is shared across stations; station-specific meteorology is not claimed. Retrospective reanalysis is not an as-of operational weather feed.
 
@@ -60,7 +128,7 @@ LSTM/GRU, additional boosters and ARIMA were not run. Direct versus recursive re
 
 ## 8. Experiment protocol
 
-Training 2017–2021; selection January–June 2022; calibration July–December 2022; retrospective test 2023. Labels crossing boundaries are purged. Selection uses MAE only and is written before test scoring. Test results are descriptive. The inherited experiment already examined the 2023 era, so a pristine external test is still needed. No shuffling, target interpolation, test tuning or test-based feature choice occurs in v2.
+Training 2017–2021; selection January–June 2022; calibration July–December 2022; retrospective test 2023. Labels crossing boundaries are purged. Selection uses MAE only and is written before test scoring. Test results are descriptive. The inherited experiment already examined the 2023 era, so a test on a previously unused period is still needed. No shuffling, target interpolation, test tuning or test-based feature choice occurs in v2.
 
 ## 9. Selected results by horizon
 
@@ -116,7 +184,7 @@ Daily midnight issuance, one 24-hour trajectory per eligible station-day, binary
 | Shadipur Delhi CPCB | 271.000 | 106.000 | 4.000 | 34.000 | 127.000 | 0.969 | 0.789 | 0.870 |
 | Sirifort Delhi CPCB | 74.000 | 34.000 | 1.000 | 6.000 | 33.000 | 0.971 | 0.846 | 0.904 |
 
-These warning-window metrics differ from fixed-lead event metrics. No true-negative event count is invented.
+These warning-window metrics differ from fixed-lead event metrics. Event counts do not have a meaningful true-negative total.
 
 ### Same-origin episode timing — the dashboard's forecast setting
 
@@ -204,7 +272,7 @@ Missingness makes this a conditional evaluation; omitted windows may be more dif
 
 
 
-The complete-history model remains unchanged. When a 73-hour calendar window contains missing past values, a separately trained XGBoost fallback uses native missing-value handling. It never fills or fabricates target values, and still abstains when current AQI is missing. Validation chooses between native missing handling with and without missingness indicators, using incomplete-history MAE at each required horizon. The nearest required horizon supplies the configuration for intermediate hours. Calibration uses missing-history July–December 2022 cases separately for each forecast hour.
+The complete-history model remains unchanged. When a 73-hour calendar window contains missing past values, a separately trained XGBoost fallback uses native missing-value handling. Target values are not filled in, and no forecast is made when current AQI is missing. Validation chooses between native missing handling with and without missingness indicators, using incomplete-history MAE at each required horizon. The nearest required horizon supplies the configuration for intermediate hours. Calibration uses missing-history July–December 2022 cases separately for each forecast hour.
 
 #### What changed and why
 
@@ -272,16 +340,16 @@ Files: experiments/results/combined_system contains combined predictions, numeri
 
 Implemented and executed: multi-station investigation/selection, calendar dataset, quality/EDA tables, leakage-safe feature tests, two baselines and two ML families, bounded time-aware tuning, A–E ablations, all four required horizons plus hourly trajectories, episode extraction/characterization, event and daily warning evaluation, feature importance, intervals, dashboard and reproducible reporting.
 
-Not established: authoritative per-record provenance, verified AQI timezone, defensible joined pollutant features, truly unseen external test, operational as-of weather and reporting latency, pollutant usefulness experiments, recursive comparison, local SHAP explanations, comprehensive hyperparameter search. This is a substantially expanded research prototype, **not full scientific closure on every requested objective**.
+Not established: official verification of individual readings, verified AQI timezone, defensible joined pollutant features, truly unseen external test, operational as-of weather and reporting latency, pollutant usefulness experiments, recursive comparison, local SHAP explanations, comprehensive hyperparameter search. The historical forecasting system works, but source verification, recent-data training and later-year evaluation remain unfinished.
 
 ## 17. Best next experiments
 
 1. Obtain primary CPCB station exports and resolve the AQI ID/timezone discrepancies before claiming operational validity.
-2. Validate pollutant timestamp semantics, then acquire overlapping years and test pollutant groups on the same calendar splits.
-3. Freeze this implementation and evaluate a later untouched year with as-of meteorology and documented reporting delays.
+2. Validate pollutant timestamp semantics, then complete overlapping model-ready data and test pollutant groups using the recorded expanded splits. The 2024–2025 concentration releases are already staged; AQI targets and 2026 observations remain outstanding.
+3. Execute the already recorded expanded evaluation protocol after source gates pass, including untouched later-period scoring and explicit meteorological availability/reporting delays.
 4. Compare station-specific meteorology and pollutant models against this pooled baseline.
 5. Improve extreme-event recall using validation-only objectives and assess warning lead time, interval calibration by season, and episode probability calibration.
 
-Validation: twelve automated temporal/inference tests passed; Streamlit application tests passed for Shadipur and DTU; browser layout was inspected and corrected. See [validation record](validation.md) and [acceptance evidence](../docs/acceptance.md).
+Validation: the latest full suite has 17 passing tests, including station-screening and interval-end preprocessing checks. Streamlit AppTest passed after the station-coverage audit was added; earlier browser layout was inspected and corrected. New pollutant preprocessing is not yet integrated into the dashboard or trained models. See [validation record](validation.md) and [acceptance evidence](../docs/acceptance.md).
 
 Sources and detailed assumptions: [methodology](../docs/methodology_v2.md), [initial audit](current_state_audit.md), [CPCB AQI calculation](https://cpcb.gov.in/National-Air-Quality-Index/), [data mirror](https://github.com/Vonter/india-cpcb-aqi), [Open-Meteo archive](https://open-meteo.com/en/docs/historical-weather-api).
