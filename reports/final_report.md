@@ -1,8 +1,14 @@
 # Delhi Pollution Episode Forecasting — Engineering Report
 
-## Current completion status — 14 September 2026
+## Current completion status — 18 September 2026
 
-**Overall: partially complete; further source verification is blocked by CPCB access failures.** The working deliverable is a seven-station historical AQI forecasting and episode-warning prototype. Recent pollutant data has been acquired and audited, but it is not integrated into the saved models. No 2024–2026 model performance is claimed.
+The authoritative current status is in [project_status.md](project_status.md). CPCB viewer and spreadsheet exports were restored on 16 September. Saved evidence now includes 2025 pollutant samples for Alipur and Anand Vihar, a 2026 Alipur sample, and Anand Vihar’s January 2026 hourly AQI workbook. Recent regional weather is staged from 1 January 2024 through 9 September 2026, and all 31 station-expansion candidates have normalized-name matches in the 2024 and 2025 pollutant lists. The latest recorded suite has 20 passing tests.
+
+This new evidence improves data access and readiness. It does not change the current seven-station 2023 model scores or create a complete recent AQI target dataset: the official hourly AQI workbook covers Anand Vihar only for January 2026. The checklist at `docs/remaining_checklist.md` is the current execution plan.
+
+## Historical status snapshot — 14 September 2026
+
+**Historical status at 14 September:** the working deliverable was a seven-station historical AQI forecasting and episode-warning prototype. Recent pollutant data had been acquired and audited, but was not integrated into saved models. No 2024–2026 model performance was claimed.
 
 ## Completed and verified
 
@@ -51,9 +57,9 @@ These combined results cover a broader population than the primary complete-hist
 7. Assess optional extensions (sequence/recursive models, local explanations) on validation evidence; document any decision not to implement them. They are not completed experiments.
 8. Regenerate final results, manifests and reports; rerun relevant tests/browser checks; complete the original requirement-by-requirement acceptance audit.
 
-## Current blocker
+## Historical source-access blocker — 14 September
 
-CPCB monthly/yearly download actions did not produce files. Its alternate Advanced Search table worked for the saved Alipur sample, but a later session reset showed a blank CAPTCHA even after refresh and reported API errors. A working official export or restored viewer is needed for broader verification.
+CPCB monthly/yearly download actions did not produce files. Its alternate Advanced Search table worked for the saved Alipur sample, but a later session reset showed a blank CAPTCHA even after refresh and reported API errors. This was resolved on 16 September; see the current status section above.
 
 ## Evidence
 
@@ -345,7 +351,7 @@ Not established: official verification of individual readings, verified AQI time
 ## 17. Best next experiments
 
 1. Obtain primary CPCB station exports and resolve the AQI ID/timezone discrepancies before claiming operational validity.
-2. Validate pollutant timestamp semantics, then complete overlapping model-ready data and test pollutant groups using the recorded expanded splits. The 2024–2025 concentration releases are already staged; AQI targets and 2026 observations remain outstanding.
+2. Validate pollutant timestamp semantics, then build a broad official recent AQI target panel and test pollutant groups using the recorded expanded splits. The 2024–2025 concentration releases and recent regional weather are staged. One January 2026 Anand Vihar AQI workbook is saved, but it is not enough for expanded training or evaluation.
 3. Execute the already recorded expanded evaluation protocol after source gates pass, including untouched later-period scoring and explicit meteorological availability/reporting delays.
 4. Compare station-specific meteorology and pollutant models against this pooled baseline.
 5. Improve extreme-event recall using validation-only objectives and assess warning lead time, interval calibration by season, and episode probability calibration.

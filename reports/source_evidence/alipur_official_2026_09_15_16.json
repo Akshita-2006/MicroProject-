@@ -1,0 +1,13 @@
+{
+  "station": "Alipur, Delhi - DPCC",
+  "criteria": "15M",
+  "requested_from": "2026-09-15",
+  "requested_to": "2026-09-16",
+  "rows": 144,
+  "source": "https://airquality.cpcb.gov.in/ccr/#/caaqm-dashboard-all/advance-search",
+  "acquired": "2026-09-16",
+  "sha256": "ccae3c480c2adf24e01a6150126ae5ebd2a42b8183488a1efd05af4b7adaed74",
+  "timezone": "Not explicitly stated in workbook; original labels retained",
+  "first": "15-09-2026 00:00",
+  "last": "16-09-2026 13:00"
+}

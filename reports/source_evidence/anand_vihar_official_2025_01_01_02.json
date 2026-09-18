@@ -1,0 +1,13 @@
+{
+  "station": "Anand Vihar, Delhi - DPCC",
+  "criteria": "15M",
+  "requested_from": "2025-01-01",
+  "requested_to": "2025-01-02",
+  "rows": 166,
+  "source": "https://airquality.cpcb.gov.in/ccr/#/caaqm-dashboard-all/advance-search",
+  "acquired": "2026-09-16",
+  "sha256": "fd6bc9aad4c73f7e73ea5b1c993c94296a30655252e17f901f13c65efd61b395",
+  "timezone": "Not explicitly stated in workbook; original labels retained",
+  "first": "01-01-2025 00:15",
+  "last": "02-01-2025 20:15"
+}

@@ -9,8 +9,7 @@ Explore the hourly, station-level AQI measurements dataset [here](https://hypara
 ## Data
 
 * The data for 15-minute interval, station-level air quality measurements is available as Parquet and compressed CSV files on the [Releases](https://github.com/Vonter/india-cpcb-aqi/releases) page.
-* [cpcb-aqi.csv.gz](data/cpcb-aqi.csv.gz): Hourly, station-level AQI measurements, as compressed CSV file.
-* [cpcb-aqi.parquet](data/cpcb-aqi.parquet): Hourly, station-level AQI measurements, as Parquet file.
+* The upstream `cpcb-aqi.csv.gz` and `cpcb-aqi.parquet` files are published on the [Releases](https://github.com/Vonter/india-cpcb-aqi/releases) page. They are not stored in this evidence folder.
 
 For more details, refer to the [DATA.md](DATA.md).
 
@@ -61,7 +60,3 @@ python parse.py
 ## Credits
 
 - [CPCB](https://airquality.cpcb.gov.in/ccr/#/caaqm-dashboard-all/caaqm-landing/aqi-repository)
-
-## AI Declaration
-
-Components of this repository, including code and documentation, were written with assistance from Claude AI.

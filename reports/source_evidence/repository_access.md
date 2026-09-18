@@ -29,3 +29,9 @@ A fresh CAPTCHA confirmation was requested and granted. On subsequent inspection
 
 
 The alternate official Advanced Search route (`/ccr/#/caaqm-dashboard-all/advance-search`) successfully displayed historical data for Alipur on 1–2 January 2025. This provides a working route for bounded primary comparisons despite failed repository downloads. The sample comparison is saved alongside this file. A later session reset required a new CAPTCHA; user approval was received, but the image was initially blank.
+
+## Export recovery — 16 September 2026
+
+A new CAPTCHA was displayed, approved and accepted. The CPCB Advanced Search viewer then exported workbooks for Alipur pollutant readings on 15–16 September 2026 and Anand Vihar pollutant readings on 1–2 January 2025. The AQI Repository also exported `AQI_Data_Station_Level_Site_301_Anand_Vihar_Delhi_DPCC_January_2026_Hourly.xlsx`.
+
+The Anand Vihar AQI workbook has a date-by-hour layout for January 2026 and is saved under `data/raw/official_aqi/`. It is primary-source evidence for one station and month, not a complete recent AQI target panel. The pollutant workbooks retain their displayed 15-minute `From Date` and `To Date` labels. None of these files explicitly states timezone, full quality-flag semantics or reporting latency.

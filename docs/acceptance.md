@@ -1,26 +1,21 @@
-# Acceptance evidence — 14 September 2026
+# Acceptance evidence — 18 September 2026
 
-**Overall: incomplete.** Read the [current status](../reports/project_status.md) for completed work, limitations and the unchanged model results. “Implemented” below describes the existing retrospective system, not acceptance of the expanded recent-data system.
+**Overall: incomplete.** The existing system is a seven-station retrospective AQI forecasting prototype. The newer data work is preparation and verification work, not new model performance.
 
-| Requirement | Status | Evidence / remaining scope |
+| Requirement | Status | Evidence and remaining scope |
 |---|---|---|
-| Multi-station investigation | Implemented; expansion partial | 39 stations audited; seven evaluated models; 31 training-era coverage candidates. New candidates require source checks and model evaluation. |
-| Historical AQI/weather dataset and EDA | Implemented | 2017–2023 panel, quality/continuity/missingness tables and regional weather metadata. |
-| Recent pollutant acquisition and audit | Implemented for 2024–2025 mirror | 2,735,215 Delhi rows; release hashes verified; station/variable quality reports. Not model-ready and no verified 2026 acquisition. |
-| Primary source identity and timestamps | Partial | Seven names/agencies matched to official PDF; one Alipur sample matches 66 values/14 missing cells at interval starts. IDs, timezone and broader applicability remain unresolved. |
-| Interval-safe pollutant preprocessing | Implemented, not integrated | Explicit-timezone helper with interval-end aggregation and three focused tests. No production join or target derivation yet. |
-| Leakage-safe AQI features | Implemented | Station-local hourly features, purged splits and temporal tests. |
-| Baselines and ML | Implemented on historical panel | Persistence, seasonal naive, RF/XGBoost, five ablations and bounded tuning. Expanded-data experiments not run. |
-| Multi-horizon forecasts and missing-history fallback | Implemented | 24 direct hourly models and fallback; 1/6/12/24h evaluation; 94.6% scheduled daily availability. |
-| Episodes and early-warning evaluation | Implemented with limits | Same-origin matching, confusion matrices, timing/censoring; duration evidence is only 28 uncensored combined cases. |
-| Uncertainty/explainability | Partial scope | Marginal intervals/global importance executed; long-horizon coverage below nominal. No local SHAP or event probabilities. |
-| Untouched later-period validation | Not executed | Protocol recorded; no new-period model scores. |
-| Pollutant predictive usefulness | Not executed | Concentrations audited but not joined, trained or ablated. |
-| Updated/station-specific weather | Outstanding | Current inputs use one regional historical grid; recent weather and as-of availability not validated. |
-| Dashboard | Implemented historical replay | Seven forecast stations; expansion audit and reasons visible; newer forecast dates/stations not enabled. |
-| Live operational delivery | Not implemented | No validated current data feed, publication latency or as-of forecasting service. |
-| Reproducibility/documentation | Implemented with limits | Portable README, current pipeline, saved artifacts and audit commands. Direct dependency versions recorded, not a full transitive lock. |
-| Tests | Latest suite passed | 17 tests; Streamlit check after station-audit update passed. Tests do not establish scientific validity. |
-| Final acceptance | Not achieved | Source verification, recent target/data integration, expanded training/external validation and final artifact checks remain. |
+| Multi-station investigation | Partial | 39 stations audited; seven evaluated models; 31 coverage candidates with normalized-name matches in 2024 and 2025 pollutant lists. Candidates are not trained models. |
+| Historical AQI/weather dataset and EDA | Implemented | 2017–2023 panel with quality, continuity and missingness tables. |
+| Recent pollutant acquisition and audit | Implemented for 2024–2025 mirror | 2,735,215 Delhi pollutant rows, release hashes and quality reports. Not model-ready. |
+| Official recent-source evidence | Partial | CPCB viewer/export access restored. Saved exports cover two 2025 pollutant samples, a 2026 Alipur sample and Anand Vihar hourly AQI for January 2026. This is not a complete recent AQI panel. |
+| Station identity and timestamps | Partial | Names/agencies matched to an official PDF. Recent samples confirm displayed 15-minute intervals. IDs, timezone and wider applicability remain unresolved. |
+| Pollutant preprocessing | Implemented, not integrated | Explicit-timezone interval aggregation helper and focused tests exist. No production join or AQI target construction. |
+| Recent weather | Partial | Regional 2024–9 September 2026 IST-labelled weather series staged and checked. It is neither station-local nor joined to a recent AQI target panel. |
+| Historical forecasting system | Implemented | Baselines, Random Forest, XGBoost, input comparisons, 24 direct horizons and missing-history fallback. |
+| Episodes and uncertainty | Implemented with limits | Episode/warning evaluation and hourly prediction ranges exist. Duration evidence is small, and ranges are not episode probabilities. |
+| Later-period evaluation | Not executed | Evaluation protocol recorded, but no expanded model scores exist for 2025 or 2026. |
+| Dashboard | Implemented historical replay | Seven forecast stations; station-expansion audit visible; newer dates and stations are not enabled. |
+| Tests | Latest suite passed | 20 tests, including recent station-name-link and weather checks. Tests do not establish scientific validity. |
+| Final acceptance | Not achieved | Broad recent AQI targets, source semantics, expanded training, later-period evaluation and final artifact checks remain. |
 
-Current blocker: official download failures and a blank CAPTCHA/API error after the successful bounded table comparison. See [source access evidence](../reports/source_evidence/repository_access.md).
+The current constraint is data breadth, not access: official exports now work, but the saved recent AQI evidence covers only Anand Vihar in January 2026. See [source access evidence](../reports/source_evidence/repository_access.md).

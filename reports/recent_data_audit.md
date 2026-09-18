@@ -1,4 +1,4 @@
-# Recent pollutant data audit — 14 September 2026
+# Recent pollutant data audit — 18 September 2026
 
 The 2024 and 2025 public CPCB-derived mirror Parquet releases were downloaded and their SHA-256 hashes matched the digests published by GitHub. This verifies file identity, not CPCB observation validity. The all-India archives are preserved under `data/raw/recent_audit`; Delhi subsets are explicitly named `_unverified.parquet` under `data/interim`.
 
@@ -17,7 +17,7 @@ The 2025 dataset includes 40 station identities; 35 have at least 85% observed P
 
 Separately, the training-era expansion audit identifies 31 coverage candidates out of 39 historical AQI stations. Seven remain in the saved forecasting system. Additional candidates require source verification and executed model evaluation before being made forecastable.
 
-Official repository downloads did not yield a file. The alternate Advanced Search table subsequently supplied an Alipur sample: ten rows matched all 66 numeric and 14 missing cells at interval-start clock labels. This bounded comparison does not certify timezone or other stations/periods. After a session reset, the CAPTCHA image remained blank after refresh and the page reported API errors; that session could not continue. Source export verification, recent AQI acquisition or validated target construction, 2026 acquisition, pollutant integration and expanded model evaluation remain incomplete.
+Official CPCB access was restored on 16 September. Saved exports include 2025 Alipur and Anand Vihar pollutant samples, a 2026 Alipur sample, and an official January 2026 hourly AQI workbook for Anand Vihar. The workbook establishes that an official hourly AQI export is obtainable, but covers only one station and one month. It cannot serve as a city-wide recent target dataset. The samples do not certify timezone, quality flags, reporting delay or all station/date combinations. Pollutant integration and expanded model evaluation remain incomplete.
 
 ## Reproduce the audit
 
@@ -35,4 +35,4 @@ The two all-India downloads total about 1.54 GB. Source checks fail on a hash mi
 
 ## Subsequent source verification and preprocessing
 
-The [saved comparison](source_evidence/alipur_official_2025_comparison.json) is reproducible with `python -m src.data_acquisition.compare_official_sample`. Interval-end aggregation is implemented and tested in `src/preprocessing/pollutant_intervals.py`, but is not yet connected to model training. See [current project status](project_status.md) for the complete remaining scope.
+The [first saved comparison](source_evidence/alipur_official_2025_comparison.json) is reproducible with `python -m src.data_acquisition.compare_official_sample`. Additional exports are under `reports/source_evidence/`. Interval-end aggregation is implemented and tested in `src/preprocessing/pollutant_intervals.py`, but is not yet connected to model training. Recent weather readiness and name links are recorded in `reports/tables/station_expansion/readiness_2026_09_16.json`. See [current project status](project_status.md) for the complete remaining scope.

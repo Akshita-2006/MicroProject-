@@ -2,26 +2,24 @@
 
 ## AQI
 
-The current forecasts use 2017–2023 hourly AQI from [Vonter/india-cpcb-aqi](https://github.com/Vonter/india-cpcb-aqi), a public archive of CPCB data. The local file matches the saved source version. Seven station names and agencies also match an official CPCB list.
+The current seven-station forecasts use 2017–2023 hourly AQI from [Vonter/india-cpcb-aqi](https://github.com/Vonter/india-cpcb-aqi), a public archive of CPCB data. The local file matches the saved source version. The selected station names and agencies also match an official CPCB station list.
 
-These checks do not verify every reading. The archive contains faulty station IDs, and the AQI timezone is assumed to be IST. Station names are used until the IDs can be verified. Source copies, file hashes and attribution notices are in `reports/source_evidence/`.
+The archive has faulty station IDs, and the AQI timezone is assumed to be IST. Station names remain the working keys until IDs can be verified.
+
+An official CPCB January 2026 hourly AQI workbook for Anand Vihar is stored under `data/raw/official_aqi/`. It covers one station and one month, so it cannot yet train or test an expanded system.
 
 ## Pollutant measurements
 
-The 2017, 2024 and 2025 releases were downloaded from the same archive. They contain pollutant concentrations, which differ from the AQI number predicted by the current models.
+The 2017, 2024 and 2025 releases contain pollutant concentrations, not the hourly AQI target used by the current models. The Delhi subsets contain 1,368,606 rows for 2024 and 1,366,609 for 2025.
 
-The Delhi subsets contain 1,368,606 rows for 2024 and 1,366,609 for 2025. These include missing values; a row does not necessarily contain a valid measurement. One ten-row Alipur sample matched the official 2025 table. Timezone, broader source checks and recent AQI targets remain unresolved, so these files are not used by the forecasting models.
-
-See the [recent data audit](../reports/recent_data_audit.md) for evidence, quality checks and commands. No verified 2026 dataset is available in this project.
+Official exports for Alipur and Anand Vihar were saved to compare with the mirror data. They support the visible 15-minute interval labels for those samples only. The source timezone, quality flags, reporting delay and broader station/date coverage still need checking. No AQI target is derived from pollutant concentrations.
 
 ## Weather
 
-The current dataset uses Open-Meteo historical weather for one Delhi location: temperature, humidity, wind speed and direction, pressure and rainfall. The saved response specifies IST and the units.
+The project uses Open-Meteo historical weather for one Delhi location: temperature, humidity, wind speed and direction, pressure and rainfall. The existing modelling data covers 2017–2023. A second checked regional series covers 1 January 2024 through 9 September 2026.
 
-All seven stations use this regional weather. It is not a measurement at each pollution station. Historical weather can also be revised after the event, so it does not prove what data would have been available to a live service at that time.
+This is regional weather, not weather measured at each pollution station. Historical weather may have been revised after the observation time, so it does not prove what a live service would have known at that time.
 
-## Source notices and further checks
+## Evidence and licensing
 
-Keep the archive's attribution and database notices with redistributed data. Copies are in `reports/source_evidence/`. OpenAQ and Kaggle were considered during the initial investigation but do not supply the current forecast inputs.
-
-The [technical methodology](methodology_v2.md) records assumptions and references. The [remaining checklist](remaining_checklist.md) lists checks needed before recent data can be used.
+Source copies, hashes, official exports and attribution notices are in `reports/source_evidence/`. See the [recent data audit](../reports/recent_data_audit.md), [technical methodology](methodology_v2.md) and [remaining checklist](remaining_checklist.md) for the precise limits before newer data can be used.

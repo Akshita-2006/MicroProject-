@@ -12,7 +12,7 @@ AQI comes from the public Vonter/india-cpcb-aqi archive, which collects CPCB dat
 
 Weather comes from Open-Meteo historical records for one Delhi location. All seven stations use the same regional weather, which cannot describe every station's local conditions.
 
-One small 2025 Alipur pollutant sample matched the official CPCB table. That check does not verify every station, date or timezone. Further comparisons remain unfinished after official downloads failed and the viewer showed a blank CAPTCHA and API errors.
+Official CPCB access now works again. Saved exports include 2025 Alipur and Anand Vihar pollutant samples, a 2026 Alipur sample and Anand Vihar’s January 2026 hourly AQI workbook. These are useful checks, but they do not verify every station, date, timezone or quality rule. The January AQI workbook covers only one station and month.
 
 ## Why only seven stations?
 

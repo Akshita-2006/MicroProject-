@@ -4,19 +4,18 @@ A Python project that predicts air pollution at Delhi monitoring stations for ea
 
 **Current state:** seven Delhi stations, historical observations from 2017–2023, saved trained models and a Streamlit replay dashboard. It is not a live monitoring feed or an official CPCB advisory. Newer data and broader station coverage remain work in progress.
 
-## Current progress — 14 September 2026
+## Current progress — 18 September 2026
 
 | Area | Current state |
 |---|---|
 | Running forecasts | Seven evaluated stations; historical AQI/weather data from 2017–2023. Dashboard replay dates remain in 2023. |
-| Recent data | 2024 and 2025 pollutant releases downloaded, hash-verified and audited: 1,368,606 and 1,366,609 Delhi rows respectively. Not yet integrated into forecasting. |
-| Station expansion | 31 coverage candidates identified among 39 historical stations; screening reasons are visible in the dashboard. Candidates are not additional trained models. |
-| Official source checks | One official Alipur sample matched all 66 numeric and 14 missing cells at interval-start clock labels. Broader station/year verification and timezone remain unresolved. |
-| Preprocessing and tests | Interval-end pollutant aggregation implemented but not connected to training. Latest full test suite: 17 passing tests. |
-| Remaining work | Verified recent AQI targets, 2026 acquisition, source/timezone checks, pollutant/weather integration, expanded training and untouched-period evaluation. |
-| Last recorded access failure | CPCB downloads failed; the viewer later showed a blank CAPTCHA and API errors. |
+| Recent data | 2024 and 2025 pollutant releases were downloaded, hash-checked and audited: 1,368,606 and 1,366,609 Delhi rows. Regional weather is staged from 1 January 2024 through 9 September 2026. These inputs are not yet used for forecasting. |
+| Official evidence | CPCB viewer and spreadsheet exports work again. Saved evidence includes 2025 pollutant samples for Alipur and Anand Vihar, a 2026 Alipur sample, and Anand Vihar’s January 2026 hourly AQI workbook. This is not a city-wide recent AQI dataset. |
+| Station expansion | 31 coverage candidates were identified among 39 historical stations. All 31 have normalized-name matches in 2024 and 2025 pollutant lists. Name matches are not official ID verification or trained models. |
+| Preprocessing and tests | Interval aggregation and recent-data readiness checks are implemented but not connected to training. Most recent complete recorded test suite: 20 passing tests. |
+| Remaining work | More official comparisons, a broad recent AQI target set, source/timezone checks, pollutant/weather integration, expanded training and untouched-period evaluation. |
 
-See [current project status](reports/project_status.md) for the complete evidence and [remaining checklist](docs/remaining_checklist.md) for next steps. The results below are unchanged 2023 retrospective scores, not results from the newly acquired data.
+See [current project status](reports/project_status.md) for the complete evidence and [remaining checklist](docs/remaining_checklist.md) for next steps. The results below remain 2023 retrospective scores, not results from the newly acquired data.
 
 ## Quick start
 
@@ -218,7 +217,7 @@ Weather comes from the [Open-Meteo historical API](https://open-meteo.com/en/doc
 
 The mirror's station IDs are faulty; names are used provisionally. Seven station names/agencies were matched to an official CPCB station list, but AQI timezone and broader export semantics remain unresolved. A bounded Alipur pollutant comparison supports interval-start labels for that sample; see the [primary comparison](reports/source_evidence/alipur_official_2025_comparison.json). AQI alignment currently assumes IST. Pollutants have not been joined because their timestamp semantics are ambiguous. Historical weather does not establish operational input availability.
 
-The old station rule requires at least 85% coverage over the full 2017–2021 calendar, which disadvantages later-starting records. The latest official repository inspection lists 2026 Anand Vihar files, but these are not yet integrated. See the [remaining checklist](docs/remaining_checklist.md).
+The old station rule requires at least 85% coverage over the full 2017–2021 calendar, which disadvantages later-starting records. An official January 2026 Anand Vihar hourly AQI workbook is now stored as source evidence, but it covers one station and month and is not integrated. See the [remaining checklist](docs/remaining_checklist.md).
 
 AQI 301–400 is Very Poor and 401–500 is Severe. The model has global feature importance, not local causal explanations. No LSTM/GRU, local SHAP, pollutant-utility or recursive-forecast experiment is claimed.
 

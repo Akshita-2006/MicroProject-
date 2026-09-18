@@ -1,32 +1,32 @@
-# Execution checklist — 14 September 2026
+# Execution checklist — 18 September 2026
 
-The project is partly complete. See [current status](../reports/project_status.md) and [acceptance evidence](acceptance.md). Current model outputs remain seven-station 2023 retrospective results.
+The project is partly complete. The dashboard and saved models still show seven-station historical forecasts for 2023. Newer data is being prepared but has not been used to train or evaluate a model.
 
 ## Completed
 
-- [x] Audit inherited prototype and 39 historical AQI stations; build seven-station 2017–2023 dataset and quality/EDA reports.
-- [x] Execute historical baselines, RF/XGBoost comparisons, bounded tuning, five feature ablations and 24-hour direct forecasts.
-- [x] Execute missing-history fallback, interval calibration, sustained episode detection, event/timing/warning evaluation and global feature importance.
-- [x] Build historical replay dashboard and portable repository setup instructions.
-- [x] Download/hash-verify/audit 2024–2025 mirror pollutant releases: 1,368,606 and 1,366,609 Delhi rows respectively.
-- [x] Reassess training-era coverage: 31 candidates among 39 archived stations; display screening reasons in dashboard.
-- [x] Record expanded train/selection/calibration/external-test periods before new-period model scores.
-- [x] Capture and compare one official Alipur sample: 66 numeric values and 14 missing cells match interval-start clock labels.
-- [x] Implement interval-end aggregation helper with explicit timezone and missing-quarter handling; keep it outside training pending source validation.
-- [x] Pass 17 automated tests; verify station-audit dashboard with Streamlit AppTest.
+- [x] Audit 39 historical AQI stations and create the seven-station 2017–2023 modelling dataset.
+- [x] Run historical baselines, Random Forest and XGBoost comparisons, tuning, input comparisons and direct 24-hour forecasts.
+- [x] Run missing-history fallback, prediction ranges, pollution-episode detection and episode/warning evaluation.
+- [x] Build the historical replay dashboard and public-repository setup instructions.
+- [x] Download, hash-check and audit 2024–2025 pollutant releases: 1,368,606 and 1,366,609 Delhi rows.
+- [x] Identify 31 station-expansion candidates from 39 archived stations using 2019–2021 coverage.
+- [x] Save the evaluation plan before calculating any new-period model scores.
+- [x] Restore access to CPCB’s official viewer and spreadsheet exports after an approved CAPTCHA.
+- [x] Save official evidence: 2025 Alipur and Anand Vihar pollutant-table exports, a 2026 Alipur export, and Anand Vihar’s January 2026 hourly AQI workbook.
+- [x] Download and validate regional Delhi weather from 1 January 2024 through 9 September 2026: 23,592 continuous IST-labelled hours with no missing weather fields.
+- [x] Match all 31 expansion candidates by normalized name to the 2024 and 2025 pollutant station lists, while preserving agency names so stations are not merged incorrectly.
+- [x] Pass 20 automated tests and load the station-audit dashboard with Streamlit AppTest.
 
-## Partial or outstanding — in dependency order
+## Still required, in order
 
-- [ ] Restore official export/viewer access; the last session showed a blank CAPTCHA and API errors.
-- [ ] Expand primary comparisons to additional stations/periods; establish station IDs, timezone, interval boundaries, quality filtering and reporting latency. One sample is not broad verification.
-- [ ] Obtain recent AQI targets or validate their construction; acquire available 2026 observations.
-- [ ] Integrate verified pollutant data and aligned recent weather; evaluate station-specific weather and actual as-of availability.
-- [ ] Finalize an expanded model-ready dataset and defensible station roster; candidate status alone does not enable forecasts.
-- [ ] Train/tune/compare expanded models and pollutant ablations using the recorded evaluation protocol; recalibrate uncertainty.
-- [ ] Execute untouched-period 2025/2026 forecast, episode, warning and timing evaluation with sample sizes and censoring.
-- [ ] Decide on sequence models, recursive forecasts and local explanations from validation evidence; record any justified deferral.
-- [ ] Update dashboard forecast dates/stations only after new model artifacts are validated.
-- [ ] Implement and validate current/as-of feeds if present-day early warning is required; current dashboard remains historical replay.
-- [ ] Regenerate final reports/manifests, run final integration/browser checks and audit all original requirements before declaring completion.
+- [ ] Expand official comparisons across stations and dates. Current samples show displayed 15-minute `Date From` and `Date To` intervals, but do not establish timezone, quality filtering or reporting delay for every export.
+- [ ] Build a broad recent AQI target dataset. The official January 2026 workbook covers Anand Vihar only; the 2024–2025 mirror releases are pollutant records, not hourly AQI targets.
+- [ ] Verify pollutant units, timestamps and averaging before creating any AQI target from concentration records.
+- [ ] Join only verified pollutant and weather inputs, then freeze a documented expanded station roster and model-ready dataset.
+- [ ] Train, tune, compare and recalibrate expanded models using the recorded evaluation plan.
+- [ ] Evaluate 2025 and later available 2026 periods without changing the model based on those test results.
+- [ ] Add newer dates and stations to the dashboard only after the relevant models and evaluations are complete.
+- [ ] Build and test a current-data feed if live warning is required. The current dashboard remains historical replay.
+- [ ] Regenerate results and reports, run final tests and complete the requirement-by-requirement acceptance review.
 
-Source acquisition/audit commands and evidence: [recent data audit](../reports/recent_data_audit.md). Reproducible primary comparison: `python -m src.data_acquisition.compare_official_sample`. Expanded experiment boundaries: [protocol](expanded_evaluation_protocol.json).
+Evidence: [project status](../reports/project_status.md), [recent data audit](../reports/recent_data_audit.md), [station and weather readiness](../reports/tables/station_expansion/readiness_2026_09_16.json), and [official source access log](../reports/source_evidence/repository_access.md). The expanded split boundaries are in [expanded_evaluation_protocol.json](expanded_evaluation_protocol.json).

@@ -18,6 +18,6 @@ Open http://127.0.0.1:8502/ and keep the terminal running. Choose a station, dat
 | Station comparison | Readings at the same time and checks for adding more stations |
 | Methodology | Plain-language explanation from `docs/methodology_guide.md` |
 
-The 2024–2025 downloads and extra station candidates are not connected to the saved forecasts yet. The dashboard is a historical demonstration, not a live service.
+The 2024–2025 pollutant files, recent regional weather and an official January 2026 Anand Vihar AQI workbook are not connected to saved forecasts yet. The dashboard is a historical demonstration, not a live service.
 
 `legacy_app.py` is the earlier dashboard, kept for reference. Use `app.py` for the current project.

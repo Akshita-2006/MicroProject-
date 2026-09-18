@@ -1,6 +1,6 @@
-# Validation record — current summary (14 September 2026)
+# Validation record — current summary (18 September 2026)
 
-Latest full suite: **17 tests passed**. Streamlit AppTest passed after the station-audit dashboard change. The later interval helper has three dedicated tests and remains outside the current inference pipeline. No new-period model validation has been performed. Historical entries below record earlier checks and their smaller test counts; they are not the current total. See [project status](project_status.md).
+Most recent complete recorded suite: **20 tests passed**. Three new checks cover station-name linking, agency-name separation and continuous recent-weather validation. Streamlit AppTest passed after the station-audit dashboard change. No new-period model validation has been performed. Historical entries below record earlier checks and their smaller test counts; they are not the current total. See [project status](project_status.md).
 
 ---
 
@@ -45,3 +45,16 @@ Checks in this pass:
 - Streamlit AppTest loaded five tabs and the new methodology text without application exceptions.
 
 This verifies the checked code paths and consistency with local results. It does not independently verify all source readings, complete recent-data training or establish live forecast accuracy.
+
+## Recent-data readiness checks — 16 September 2026
+
+- CPCB’s viewer and spreadsheet exports were recovered after CAPTCHA verification. Saved evidence includes official 2025 pollutant samples, a 2026 Alipur pollutant sample and Anand Vihar’s January 2026 hourly AQI workbook.
+- Downloaded Open-Meteo regional weather from 1 January 2024 through 9 September 2026. The validation script found 23,592 continuous IST-labelled hourly records and no missing requested weather fields.
+- Verified normalized station-name links: all 31 expansion candidates match the 2024 and 2025 pollutant station lists. The check preserves agency names and rejects ambiguous IDs.
+- The full test suite passed: 20 tests in 26.351 seconds.
+
+These checks confirm staged inputs and evidence files. They do not create a complete recent AQI panel, expand the trained station list or produce new forecast scores.
+
+## Documentation refresh — 18 September 2026
+
+Updated the README, dashboard guide, source notes, technical methodology, project status, acceptance matrix, checklist and engineering-report status section. Checked all Markdown links in these documents; no broken local links were found. A full test rerun requires the repository environment from `requirements-lock.txt`: the available bundled Python runtime lacks `scipy`, `joblib` and `pyarrow`.
