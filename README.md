@@ -54,6 +54,18 @@ The launcher prefers the repository's `.venv` interpreter, otherwise uses `pytho
 
 `requirements-lock.txt` records the direct package versions used by this project; it is not a complete transitive dependency lock. `requirements.txt` contains unpinned package names. Prefer the recorded versions when loading the saved models.
 
+## Streamlit Community Cloud deployment
+
+Before deploying, commit the dashboard runtime bundle to GitHub. It contains only the files needed by `dashboard/app.py`: the two processed panels, the 2024 and 2025 recorded-concentration files, saved model directories, and saved result files. The repository ignore rules already permit these exact files while continuing to exclude raw archives and training-only data.
+
+```powershell
+git add dashboard src requirements.txt .gitignore data/processed/delhi_hourly_all_eligible.parquet data/processed/delhi_concentrations_hourly_2017_2025.parquet data/interim/delhi_pollutants_2024_unverified.parquet data/interim/delhi_pollutants_2025_unverified.parquet experiments/models experiments/results/all_eligible_30 experiments/results/concentrations_2017_2025
+git commit -m "Add Streamlit deployment bundle"
+git push origin main
+```
+
+Then open [Streamlit Community Cloud](https://share.streamlit.io/), select the repository and `main` branch, set the entrypoint to `dashboard/app.py`, and click **Deploy**. Community Cloud redeploys after later pushes to that branch.
+
 ## Using the dashboard
 
 1. Select a monitoring station in the sidebar.

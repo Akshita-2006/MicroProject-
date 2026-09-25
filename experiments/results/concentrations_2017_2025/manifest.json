@@ -1,0 +1,19 @@
+{
+  "data": "C:\\Users\\AKSHITA SACHDEVA\\Desktop\\MicroProject\\data\\processed\\delhi_concentrations_hourly_2017_2025.parquet",
+  "split": "train 2017-2023, validation 2024, test 2025",
+  "pollutants": [
+    "PM2.5 (\u00b5g/m\u00b3)",
+    "PM10 (\u00b5g/m\u00b3)",
+    "NO2 (\u00b5g/m\u00b3)",
+    "Ozone (\u00b5g/m\u00b3)",
+    "SO2 (\u00b5g/m\u00b3)",
+    "CO (mg/m\u00b3)",
+    "Benzene (\u00b5g/m\u00b3)"
+  ],
+  "horizons": [
+    1,
+    6,
+    12,
+    24
+  ]
+}

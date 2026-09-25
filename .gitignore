@@ -14,3 +14,15 @@ experiments/logs/*
 !experiments/logs/README.md
 reports/figures/*
 reports/tables/*
+
+# Minimal files needed to run the public Streamlit dashboard on Community Cloud.
+!data/processed/delhi_hourly_all_eligible.parquet
+!data/processed/delhi_concentrations_hourly_2017_2025.parquet
+!data/interim/delhi_pollutants_2024_unverified.parquet
+!data/interim/delhi_pollutants_2025_unverified.parquet
+!experiments/results/all_eligible_30/
+!experiments/results/all_eligible_30/*.csv
+!experiments/results/all_eligible_30/*.json
+!experiments/results/all_eligible_30/*.parquet
+!experiments/results/concentrations_2017_2025/
+!experiments/results/concentrations_2017_2025/metrics.csv

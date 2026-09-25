@@ -1,0 +1,30 @@
+{
+  "python": "3.13.5",
+  "completed_at_unix": 1790341393.5018058,
+  "seed": 42,
+  "hpo_stride": 4,
+  "rf_parameters": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "criterion": "squared_error",
+    "max_depth": 14,
+    "max_features": 1.0,
+    "max_leaf_nodes": null,
+    "max_samples": 0.5,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 8,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 60,
+    "n_jobs": 4,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "data_path": "C:\\Users\\AKSHITA SACHDEVA\\Desktop\\MicroProject\\data\\processed\\delhi_hourly_all_eligible.parquet",
+  "stations": 30,
+  "fit_stride": 4,
+  "test_previously_inspected": true
+}
