@@ -1,11 +1,13 @@
-pandas
-numpy
-requests
-scikit-learn
-scipy
-matplotlib
-plotly
-xgboost
-pyarrow
-joblib
-streamlit
+# Runtime versions matched to the saved dashboard model artifacts.
+pandas==3.0.1
+numpy==2.3.5
+requests==2.34.2
+scikit-learn==1.9.1
+scipy==1.18.1
+matplotlib==3.11.1
+plotly==7.0.0
+xgboost==3.4.1
+# Community Cloud currently replaces pyarrow 25 because of its known runtime issue.
+pyarrow==24.0.0
+joblib==1.6.0
+streamlit==1.63.0

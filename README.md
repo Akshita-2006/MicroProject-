@@ -64,7 +64,9 @@ git commit -m "Add Streamlit deployment bundle"
 git push origin main
 ```
 
-Then open [Streamlit Community Cloud](https://share.streamlit.io/), select the repository and `main` branch, set the entrypoint to `dashboard/app.py`, and click **Deploy**. Community Cloud redeploys after later pushes to that branch.
+Then open [Streamlit Community Cloud](https://share.streamlit.io/), select the repository and `main` branch, set the entrypoint to `dashboard/app.py`, open **Advanced settings**, select **Python 3.12**, and click **Deploy**. The `requirements.txt` file pins the packages used to save the dashboard models, including the Cloud-compatible PyArrow release. Community Cloud redeploys after later pushes to that branch.
+
+If an app was first deployed with a different Python version, delete that Cloud app and deploy it again with Python 3.12; Community Cloud does not change an existing app's Python version in place. No project data or model files need to be deleted for this step.
 
 ## Using the dashboard
 
