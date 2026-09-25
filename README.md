@@ -13,7 +13,7 @@ A Python project that predicts air pollution at Delhi monitoring stations for ea
 | Official evidence | CPCB viewer and spreadsheet exports work again. Saved evidence includes 2025 pollutant samples for Alipur and Anand Vihar, a 2026 Alipur sample, and Anand Vihar’s January 2026 hourly AQI workbook. This is not a city-wide recent AQI dataset. |
 | Station expansion | 31 coverage candidates were identified among 39 historical stations. Thirty have usable 2017–2023 archived records and were trained in the expanded pooled model. |
 | Concentration forecasts | 2,361,483 hourly station records across 30 stations. Seven pollutant models trained on 2017-2023, checked in 2024 and tested once on 2025. |
-| Dashboard and tests | The 2025 concentration forecast and accuracy view is connected to the dashboard. The project has 21 passing automated tests. |
+| Dashboard and tests | The 2024 validation and 2025 test concentration forecasts, accuracy views, and concentration-history chart are connected to the dashboard. The project has 21 passing automated tests. |
 | Remaining work | Obtain broad official 2024-2025 hourly AQI targets only if the AQI model must also extend through 2025; live data remains future scope. |
 
 See [current project status](reports/project_status.md) for the complete evidence and [remaining checklist](docs/remaining_checklist.md) for next steps. The results below remain 2023 retrospective scores, not results from the newly acquired data.
@@ -42,6 +42,8 @@ python3.12 -m venv .venv
 
 No environment activation is required. Open **http://127.0.0.1:8502/** in your browser. Keep the terminal open while using the app. Press **Ctrl+C** to stop it. If this app is already running on that port, open its URL instead of starting another copy.
 
+If PowerShell or VS Code displays a line containing `Activate.ps1` or shows `(.venv)` before the prompt, it has only selected the project’s Python environment. Do not run `Activate.ps1` yourself; continue with the dashboard command.
+
 After installation, Windows users can also run:
 
 ```powershell
@@ -56,8 +58,9 @@ The launcher prefers the repository's `.venv` interpreter, otherwise uses `pytho
 
 1. Select a monitoring station in the sidebar.
 2. Choose a date and issue hour in IST. The same selection is used by every tab. The AQI replay chart has evaluated target data through 2023. For 2024–2025, the main page changes to a concentration-forecast view with all seven pollutants across +1, +6, +12 and +24 hours.
-3. Open **Forecast & episode** for the observed AQI, four forecast horizons, uncertainty bands, episode details and forecast download.
+3. For a 2023 selection, open **Forecast & episode** for the observed AQI, four forecast horizons, uncertainty bands, episode details and forecast download. For a 2024–2025 selection, open **Concentration forecast** for the seven-pollutant, four-horizon forecast grid.
 4. Open **Pollutants** to view the corresponding selected date. Changing the date there also changes the sidebar date. Each recorded pollutant has a green, yellow, or red comparison against that station's 2025 readings, plus plain-language hazard information. In both 2024 and 2025, the tab shows 1/6/12/24-hour concentration forecasts; it labels 2024 validation accuracy separately from untouched 2025 test accuracy.
+5. Open **AQI history** for a 2023 selection, or **Concentration history** for a 2024–2025 selection. The latter lets you choose one pollutant and see its recorded history for the selected station and period.
 
 For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use history through the selected issue time. Incomplete past history uses the separately validated fallback when available; no forecast is made if the current AQI is missing. If AQI is not predicted to fall below 301 within 24 hours, its end time is shown as unknown.
 

@@ -8,13 +8,13 @@ Follow the installation commands in the [main README](../README.md). From the re
 python -m streamlit run dashboard/app.py --server.address 127.0.0.1 --server.port 8502
 ```
 
-Open http://127.0.0.1:8502/ and keep the terminal running. Choose a station, date and hour in the sidebar. The Pollutants tab uses the same date; changing its date updates the sidebar as well.
+Open http://127.0.0.1:8502/ and keep the terminal running. Choose a station, date and hour in the sidebar. The Pollutants tab uses the same date; changing its date updates the sidebar as well. A terminal line containing `Activate.ps1` or a `(.venv)` prompt only means PowerShell selected the project environment; no manual activation is needed.
 
 | Tab | Contents |
 |---|---|
 | Forecast & episode | Next 24 hours, prediction ranges and sustained pollution periods |
 | Pollutants | Recorded 2024-2025 concentrations; plain-language pollutant effects and green/yellow/red station-relative comparison; 2024 validation and 2025 1/6/12/24-hour concentration forecasts with their correctly labelled accuracy, and an optional non-diagnostic precaution profile |
-| AQI history / Concentration history | Past AQI readings for a 2023 selection; for a 2024–2025 selection, recorded history for the chosen pollutant at the same station |
+| AQI history / Concentration history | Past AQI readings for a 2023 selection; for a 2024–2025 selection, recorded history for the chosen pollutant at the same station and period |
 | Model evidence | Forecast errors, warning results and model inputs |
 | Station comparison | Readings at the same time and checks for adding more stations |
 | Methodology | Plain-language explanation from `docs/methodology_guide.md` |
