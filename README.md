@@ -78,24 +78,22 @@ For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use 
 
 The dashboard selector includes 30 eligible Delhi stations. Its concentration tab uses station names matched to the 2024-2025 public source releases.
 
-## Current results`r`n`r`nThe calibrated-AQI experiment uses 2017–2023 training, 2024 validation and a final 2025 test. Official-AQI agreement is checked separately on untouched 2023 data; see `reports/calibrated_aqi_final.md` for the result table and limitation.
+## Current results
 
-Results averaged across the 30-station expanded XGBoost models in 2023. MAE is average error in AQI points; RMSE gives more weight to large errors. Lower is better for both. R² measures fit, not percentage accuracy:
+The calibrated-AQI experiment trains on 2017–2023, validates in 2024, and reports one final 2025 test. R² measures how closely predicted values follow held-out target variation; it is not a percentage accuracy. MAE is the average error in AQI points.
 
-| Horizon | MAE (AQI points) | RMSE | R² |
+Official-AQI agreement was checked on untouched 2023 archived AQI: **R² 0.903**, **MAE 25.45**, and **RMSE 39.85** across 198,558 station-hours.
+
+| AQI horizon | 2024 validation R² | 2025 test R² | 2025 MAE |
 |---|---:|---:|---:|
-| 1 hour | 25.32 | 41.02 | 0.894 |
-| 6 hours | 48.20 | 66.25 | 0.730 |
-| 12 hours | 52.47 | 71.81 | 0.687 |
-| 24 hours | 55.52 | 75.39 | 0.659 |
+| 1 hour | 0.954 | 0.956 | 16.95 |
+| 6 hours | 0.816 | 0.845 | 35.47 |
+| 12 hours | 0.775 | 0.816 | 38.56 |
+| 24 hours | 0.745 | 0.782 | 41.96 |
 
-Precision is the share of predicted warnings that were correct; recall is the share of actual episodes detected. F1 combines the two. Daily warning precision/recall/F1: **95.3% / 72.8% / 82.6%**. Stricter individual episode-segment precision/recall/F1: **77.0% / 60.9% / 68.0%**.
+The seven pollutant models use the same chronological split. Their average 2025 R² values across PM2.5, PM10, nitrogen dioxide, ozone, sulphur dioxide, carbon monoxide, and benzene are **0.758**, **0.566**, **0.585**, and **0.576** at 1, 6, 12, and 24 hours respectively. Pollutant predictions remain in their measured units, not percentages.
 
-Average onset/peak/recovery errors on matched, evaluable segments are approximately 2.0/3.9/3.2 hours. Duration error is 2.2 hours, but only 28 cases with fully known starts and ends support that estimate.
-
-Forecast availability is **94.6%** of 2,548 scheduled daily windows; **74.3%** are evaluable for episodes after requiring future observations. Availability is not accuracy. Nominal 90% interval coverage is about 89.0% at 1 hour and 85.5% at 24 hours.
-
-Training uses 2017–2021, model selection January–June 2022, and interval calibration July–December 2022. The inherited prototype already examined the 2023 era, so these are retrospective results, not an untouched external test. No 2025/2026 model results are claimed.
+The 2024–2025 AQI target is calibrated from the pollutant panel; it is not a direct official CPCB hourly AQI release. See `reports/calibrated_aqi_final.md` for the full limitation.
 
 ## Commands for tests, reports and training
 
