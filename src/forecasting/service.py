@@ -10,9 +10,9 @@ from src.episode_detection.timeline import extract, category
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def forecast(history, issued, artifacts=None):
+def forecast(history, issued, artifacts=None, experiment='v2'):
     root = Path(artifacts) if artifacts else ROOT
-    selected = json.loads((root/'experiments/results/v2/selection.json').read_text())
+    selected = json.loads((root/'experiments/results'/experiment/'selection.json').read_text())
     history = history[history.timestamp <= issued].sort_values('timestamp').tail(73)
     if len(history) < 73 or history.timestamp.iloc[-1] != issued:
         raise ValueError('73 consecutive hours ending at issuance are required')
@@ -43,7 +43,7 @@ def forecast(history, issued, artifacts=None):
         elif kind == 'seasonal_naive':
             p = history.aqi.iloc[-1-(24-h)]
         else:
-            folder = 'missing_history_fallback' if fallback is not None else 'v2'
+            folder = 'missing_history_fallback' if fallback is not None else experiment
             est = joblib.load(root/f'experiments/models/{folder}/h{h}.joblib')
             p = float(est.predict(row[cfg['features']])[0])
         p = float(np.clip(p,0,500))
@@ -57,9 +57,10 @@ def forecast(history, issued, artifacts=None):
 def warning(trajectory, current_aqi):
     events = extract(trajectory.set_index('target_time').prediction)
     if events:
-        risk = 'SEVERE RISK' if max(e.peak_aqi for e in events) >= 401 else 'HIGH RISK'
+        risk = ('Possible severe pollution episode' if max(e.peak_aqi for e in events) >= 401
+                else 'Possible very poor pollution episode')
     elif trajectory.prediction.max() >= 201:
-        risk = 'MODERATE RISK'
+        risk = 'Pollution may reach the Poor category'
     else:
-        risk = 'LOW RISK'
+        risk = 'No sustained high-pollution period predicted'
     return dict(risk=risk,current_category=category(current_aqi),episodes=events)

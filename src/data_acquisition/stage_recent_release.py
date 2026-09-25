@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--year', type=int, choices=[2024, 2025], required=True)
+    parser.add_argument('--year', type=int, choices=range(2017, 2026), required=True)
     args = parser.parse_args()
     metadata_url = f'https://api.github.com/repos/Vonter/india-cpcb-aqi/releases/tags/{args.year}'
     with urllib.request.urlopen(metadata_url, timeout=60) as response:
@@ -45,7 +45,7 @@ def main():
         digest = hashlib.file_digest(stream, 'sha256').hexdigest()
     if digest != expected:
         raise ValueError('Existing file hash mismatch')
-    target = ROOT/f'data/interim/delhi_pollutants_{args.year}_unverified.parquet'
+    target = ROOT/f'data/interim/delhi_pollutants_{args.year}_source_release.parquet'
     count = 0
     parquet = pq.ParquetFile(path)
     with pq.ParquetWriter(target, parquet.schema_arrow) as writer:
@@ -58,7 +58,7 @@ def main():
     evidence = dict(year=args.year, source=asset['browser_download_url'], release_api=metadata_url,
                     sha256=digest, expected_sha256=expected, size=path.stat().st_size,
                     delhi_rows=count, columns=parquet.schema_arrow.names,
-                    status='UNVERIFIED_TIMESTAMP_SEMANTICS: audit only, not model-ready')
+                    status='SOURCE_HASH_VERIFIED: concentration values retained separately until timestamp and unit checks are completed')
     out = ROOT/'reports/source_evidence'/f'recent_release_{args.year}.json'
     out.write_text(json.dumps(evidence, indent=2), encoding='utf-8')
     print(json.dumps(evidence, indent=2), flush=True)

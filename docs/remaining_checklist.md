@@ -1,32 +1,30 @@
-# Execution checklist — 18 September 2026
-
-The project is partly complete. The dashboard and saved models still show seven-station historical forecasts for 2023. Newer data is being prepared but has not been used to train or evaluate a model.
+# Execution checklist - 25 September 2026
 
 ## Completed
 
-- [x] Audit 39 historical AQI stations and create the seven-station 2017–2023 modelling dataset.
-- [x] Run historical baselines, Random Forest and XGBoost comparisons, tuning, input comparisons and direct 24-hour forecasts.
-- [x] Run missing-history fallback, prediction ranges, pollution-episode detection and episode/warning evaluation.
-- [x] Build the historical replay dashboard and public-repository setup instructions.
-- [x] Download, hash-check and audit 2024–2025 pollutant releases: 1,368,606 and 1,366,609 Delhi rows.
-- [x] Identify 31 station-expansion candidates from 39 archived stations using 2019–2021 coverage.
-- [x] Save the evaluation plan before calculating any new-period model scores.
-- [x] Restore access to CPCB’s official viewer and spreadsheet exports after an approved CAPTCHA.
-- [x] Save official evidence: 2025 Alipur and Anand Vihar pollutant-table exports, a 2026 Alipur export, and Anand Vihar’s January 2026 hourly AQI workbook.
-- [x] Download and validate regional Delhi weather from 1 January 2024 through 9 September 2026: 23,592 continuous IST-labelled hours with no missing weather fields.
-- [x] Match all 31 expansion candidates by normalized name to the 2024 and 2025 pollutant station lists, while preserving agency names so stations are not merged incorrectly.
-- [x] Pass 20 automated tests and load the station-audit dashboard with Streamlit AppTest.
+- [x] Build, train and evaluate the 30-station historical AQI replay system for 2017-2023.
+- [x] Add the 2024-2025 recorded-pollutant dashboard view and source release link.
+- [x] Download, hash-check and filter the 2018 and 2019 annual concentration releases to Delhi.
+- [x] Retain the existing 2017, 2024 and 2025 Delhi concentration releases.
+- [x] Stage regional Delhi weather through 2026 and retain CPCB export evidence.
+- [x] Add a voluntary, non-diagnostic precaution profile and pass 21 automated tests.
 
-## Still required, in order
+## Required for the 2017-2025 concentration model
 
-- [ ] Expand official comparisons across stations and dates. Current samples show displayed 15-minute `Date From` and `Date To` intervals, but do not establish timezone, quality filtering or reporting delay for every export.
-- [ ] Build a broad recent AQI target dataset. The official January 2026 workbook covers Anand Vihar only; the 2024–2025 mirror releases are pollutant records, not hourly AQI targets.
-- [ ] Verify pollutant units, timestamps and averaging before creating any AQI target from concentration records.
-- [ ] Join only verified pollutant and weather inputs, then freeze a documented expanded station roster and model-ready dataset.
-- [ ] Train, tune, compare and recalibrate expanded models using the recorded evaluation plan.
-- [ ] Evaluate 2025 and later available 2026 periods without changing the model based on those test results.
-- [ ] Add newer dates and stations to the dashboard only after the relevant models and evaluations are complete.
-- [ ] Build and test a current-data feed if live warning is required. The current dashboard remains historical replay.
-- [ ] Regenerate results and reports, run final tests and complete the requirement-by-requirement acceptance review.
+- [x] Download, SHA-256 verify and filter the 2020, 2021, 2022 and 2023 annual concentration releases.
+- [x] Assemble one continuous station/pollutant panel for 2017-2025.
+- [x] Preserve station mapping and source units; measured missing values remain missing.
+- [x] Train concentration models on 2017-2023, select settings on 2024 and evaluate once on untouched 2025.
+- [x] Add evaluated concentration forecasts and their accuracy to the dashboard and reports.
+- [x] Connect the sidebar and pollutant date controls, and add station-relative colour cards with plain-language pollutant effects.
 
-Evidence: [project status](../reports/project_status.md), [recent data audit](../reports/recent_data_audit.md), [station and weather readiness](../reports/tables/station_expansion/readiness_2026_09_16.json), and [official source access log](../reports/source_evidence/repository_access.md). The expanded split boundaries are in [expanded_evaluation_protocol.json](expanded_evaluation_protocol.json).
+## Required only to extend AQI testing through 2025
+
+- [ ] Obtain a broad, official 2024-2025 hourly AQI target panel. The annual concentration release cannot substitute for this target.
+- [ ] Retrain or evaluate the AQI model on the approved 2017-2025 target split after that panel passes validation.
+
+## Future scope
+
+- [ ] Live CPCB feed and real-time warning operation.
+
+Source catalog: [annual CPCB-derived releases](https://github.com/Vonter/india-cpcb-aqi/releases). Release hashes are stored in `reports/source_evidence/recent_release_<year>.json`.

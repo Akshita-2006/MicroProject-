@@ -1,6 +1,6 @@
-# Validation record — current summary (18 September 2026)
+# Validation record — current summary (25 September 2026)
 
-Most recent complete recorded suite: **20 tests passed**. Three new checks cover station-name linking, agency-name separation and continuous recent-weather validation. Streamlit AppTest passed after the station-audit dashboard change. No new-period model validation has been performed. Historical entries below record earlier checks and their smaller test counts; they are not the current total. See [project status](project_status.md).
+Most recent complete recorded suite: **21 tests passed**. The added check confirms the 30-station historical panel has a continuous hourly grid. Streamlit AppTest passed for the 30-station dashboard, the 2024-2025 pollutant-record view, the connected 2025 concentration forecast view, and two-way sidebar/pollutant date synchronisation. Concentration models were trained on 2017-2023, checked in 2024 and tested once on 2025. The AQI model itself still has no broad 2024-2025 official target panel. Historical entries below record earlier checks and their smaller test counts; they are not the current total. See [project status](project_status.md).
 
 ---
 

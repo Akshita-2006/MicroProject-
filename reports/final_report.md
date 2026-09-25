@@ -1,10 +1,10 @@
 # Delhi Pollution Episode Forecasting — Engineering Report
 
-## Current completion status — 18 September 2026
+## Current completion status — 25 September 2026
 
-The authoritative current status is in [project_status.md](project_status.md). CPCB viewer and spreadsheet exports were restored on 16 September. Saved evidence now includes 2025 pollutant samples for Alipur and Anand Vihar, a 2026 Alipur sample, and Anand Vihar’s January 2026 hourly AQI workbook. Recent regional weather is staged from 1 January 2024 through 9 September 2026, and all 31 station-expansion candidates have normalized-name matches in the 2024 and 2025 pollutant lists. The latest recorded suite has 20 passing tests.
+The authoritative current status is in [project_status.md](project_status.md). The AQI replay system now has 30 evaluated stations and 21 passing automated tests. Public concentration releases for every year from 2017 through 2025 were downloaded, SHA-256 verified and filtered to Delhi. Concentration models were trained on 2017-2023, selected in 2024 and tested once on 2025.
 
-This new evidence improves data access and readiness. It does not change the current seven-station 2023 model scores or create a complete recent AQI target dataset: the official hourly AQI workbook covers Anand Vihar only for January 2026. The checklist at `docs/remaining_checklist.md` is the current execution plan.
+This does not create a complete 2024-2025 hourly AQI target dataset: the annual releases contain concentrations, not hourly AQI targets. The AQI model is therefore still evaluated through 2023, while the completed concentration model is evaluated through 2025. The checklist at `docs/remaining_checklist.md` is the current execution plan.
 
 ## Historical status snapshot — 14 September 2026
 
@@ -14,7 +14,7 @@ This new evidence improves data access and readiness. It does not change the cur
 
 | Work | Evidence and scope |
 |---|---|
-| Historical modelling dataset | Seven stations, 2017–2023 AQI and regional weather; quality audit of 39 stations. |
+| Historical modelling dataset | 30 evaluated stations, 2017–2023 AQI and regional weather; quality audit of 39 stations. |
 | Forecasting and experiments | Persistence, seasonal naive, Random Forest and XGBoost; bounded time-aware tuning, five feature ablations, 1/6/12/24h evaluation and 24 hourly trajectory models. |
 | Pollution episode detection | Sustained-event detection, severity/onset/peak/duration/recovery, unknown boundaries caused by missing readings, one-to-one matching and daily warning evaluation. |
 | Missing-history fallback | Backup model for gaps in past readings. Forecasts were produced for 94.6% of scheduled daily windows; 74.3% had enough future readings to score episodes. These are coverage figures, not accuracy. |

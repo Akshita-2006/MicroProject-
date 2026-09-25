@@ -2,18 +2,19 @@
 
 A Python project that predicts air pollution at Delhi monitoring stations for each of the next 24 hours. It estimates when a period of high pollution may start, reach its peak and end.
 
-**Current state:** seven Delhi stations, historical observations from 2017–2023, saved trained models and a Streamlit replay dashboard. It is not a live monitoring feed or an official CPCB advisory. Newer data and broader station coverage remain work in progress.
+**Current state:** 30 eligible Delhi stations, historical observations from 2017–2023, saved trained models and a Streamlit replay dashboard. It is not a live monitoring feed or an official CPCB advisory. The dashboard also contains a voluntary precaution profile; it does not diagnose disease or predict a medical outcome.
 
-## Current progress — 18 September 2026
+## Current progress — 25 September 2026
 
 | Area | Current state |
 |---|---|
-| Running forecasts | Seven evaluated stations; historical AQI/weather data from 2017–2023. Dashboard replay dates remain in 2023. |
-| Recent data | 2024 and 2025 pollutant releases were downloaded, hash-checked and audited: 1,368,606 and 1,366,609 Delhi rows. Regional weather is staged from 1 January 2024 through 9 September 2026. These inputs are not yet used for forecasting. |
+| Running forecasts | 30 evaluated stations; historical AQI/weather data from 2017–2023. AQI replay charts use 2023, while the shared date selector also supports the 2024–2025 concentration view. |
+| Recent data | Delhi concentration releases for every year from 2017 through 2025 are stored and SHA-256 checked against their release metadata. |
 | Official evidence | CPCB viewer and spreadsheet exports work again. Saved evidence includes 2025 pollutant samples for Alipur and Anand Vihar, a 2026 Alipur sample, and Anand Vihar’s January 2026 hourly AQI workbook. This is not a city-wide recent AQI dataset. |
-| Station expansion | 31 coverage candidates were identified among 39 historical stations. All 31 have normalized-name matches in 2024 and 2025 pollutant lists. Name matches are not official ID verification or trained models. |
-| Preprocessing and tests | Interval aggregation and recent-data readiness checks are implemented but not connected to training. Most recent complete recorded test suite: 20 passing tests. |
-| Remaining work | More official comparisons, a broad recent AQI target set, source/timezone checks, pollutant/weather integration, expanded training and untouched-period evaluation. |
+| Station expansion | 31 coverage candidates were identified among 39 historical stations. Thirty have usable 2017–2023 archived records and were trained in the expanded pooled model. |
+| Concentration forecasts | 2,361,483 hourly station records across 30 stations. Seven pollutant models trained on 2017-2023, checked in 2024 and tested once on 2025. |
+| Dashboard and tests | The 2025 concentration forecast and accuracy view is connected to the dashboard. The project has 21 passing automated tests. |
+| Remaining work | Obtain broad official 2024-2025 hourly AQI targets only if the AQI model must also extend through 2025; live data remains future scope. |
 
 See [current project status](reports/project_status.md) for the complete evidence and [remaining checklist](docs/remaining_checklist.md) for next steps. The results below remain 2023 retrospective scores, not results from the newly acquired data.
 
@@ -54,15 +55,15 @@ The launcher prefers the repository's `.venv` interpreter, otherwise uses `pytho
 ## Using the dashboard
 
 1. Select a monitoring station in the sidebar.
-2. Choose a replay date and issue hour in IST. The current date picker covers 1 January–30 December 2023; it does not issue today's forecast.
+2. Choose a date and issue hour in IST. The same selection is used by every tab. The AQI replay chart has evaluated target data through 2023; dates in 2024–2025 show the recorded pollutant concentrations and the 2025 concentration forecasts.
 3. Open **Forecast & episode** for the observed AQI, four forecast horizons, uncertainty bands, episode details and forecast download.
-4. Open **Historical trends**, **Model evidence**, **Station comparison** or **Methodology** for the supporting analysis.
+4. Open **Pollutants** to view the corresponding selected date. Changing the date there also changes the sidebar date. Each recorded pollutant has a green, yellow, or red comparison against that station's 2025 readings, plus plain-language hazard information. In 2025, the tab also shows 1/6/12/24-hour concentration forecasts and held-out 2025 accuracy.
 
 For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use history through the selected issue time. Incomplete past history uses the separately validated fallback when available; no forecast is made if the current AQI is missing. If AQI is not predicted to fall below 301 within 24 hours, its end time is shown as unknown.
 
 ## What is implemented
 
-- Audit of 39 stations, with seven selected using training-period coverage and conflicting-record checks.
+- Audit of 39 stations, with 30 eligible stations used in the expanded historical training set.
 - Hourly calendars, missingness and continuity reports, duplicate/range checks and exploratory analysis.
 - Station-local AQI lags, rolling statistics, time features and regional weather inputs.
 - Persistence and seasonal-naive baselines, Random Forest and XGBoost comparisons, five input combinations and a limited search for model settings using earlier periods for training and later periods for validation.
@@ -70,20 +71,20 @@ For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use 
 - Sustained episode detection: AQI at least 301 for three consecutive hours. Three hours is a research policy, not an official CPCB persistence rule.
 - Comparison of predicted and observed episodes, correct and missed warnings, timing errors and counts of cases with known start/end times.
 - Prediction ranges targeting 90% coverage of individual hourly readings, plus a chart of the inputs the model uses most.
-- Saved-model inference, reproducible evaluation/report commands and seventeen automated tests.
+- Saved-model inference, reproducible evaluation/report commands and 21 automated tests.
 
-Current stations: Shadipur, DTU, NSIT Dwarka, ITO, IHBAS Dilshad Garden, Sirifort and Mandir Marg.
+The dashboard selector includes 30 eligible Delhi stations. Its concentration tab uses station names matched to the 2024-2025 public source releases.
 
 ## Current results
 
-Results for the main and backup models across all seven stations in 2023. MAE is average error in AQI points; RMSE gives more weight to large errors. Lower is better for both. R² measures fit, not percentage accuracy:
+Results averaged across the 30-station expanded XGBoost models in 2023. MAE is average error in AQI points; RMSE gives more weight to large errors. Lower is better for both. R² measures fit, not percentage accuracy:
 
 | Horizon | MAE (AQI points) | RMSE | R² |
 |---|---:|---:|---:|
-| 1 hour | 26.06 | 43.85 | 0.874 |
-| 6 hours | 48.95 | 68.40 | 0.695 |
-| 12 hours | 52.50 | 72.72 | 0.656 |
-| 24 hours | 54.92 | 75.48 | 0.628 |
+| 1 hour | 25.32 | 41.02 | 0.894 |
+| 6 hours | 48.20 | 66.25 | 0.730 |
+| 12 hours | 52.47 | 71.81 | 0.687 |
+| 24 hours | 55.52 | 75.39 | 0.659 |
 
 Precision is the share of predicted warnings that were correct; recall is the share of actual episodes detected. F1 combines the two. Daily warning precision/recall/F1: **95.3% / 72.8% / 82.6%**. Stricter individual episode-segment precision/recall/F1: **77.0% / 60.9% / 68.0%**.
 
@@ -166,7 +167,7 @@ MicroProject/
 ├── data/
 │   ├── raw/                          # Original compressed AQI, weather and pollutant sample
 │   ├── interim/                      # Reshaped hourly data and source diagnostics
-│   └── processed/                    # Model-ready seven-station hourly panel
+│   └── processed/                    # Model-ready historical station panels
 ├── src/
 │   ├── data_acquisition/             # Downloads, provenance and station-source checks
 │   ├── preprocessing/                # AQI/weather conversion; earlier preprocessing retained
@@ -248,7 +249,7 @@ AQI 301–400 is Very Poor and 401–500 is Severe. The model has global feature
 
 ### Station expansion audit
 
-Run `python -m src.analysis.reassess_stations` using your project environment to generate the 39-station coverage screen. It identifies 31 candidates using 2019–2021 observations only; seven currently have evaluated forecast models. The dashboard Station comparison tab shows the screening reasons. Candidate status is not model validation. New-period evaluation boundaries are recorded in `docs/expanded_evaluation_protocol.json`; training on recent data remains gated on source verification.
+Run `python -m src.analysis.reassess_stations` using your project environment to generate the 39-station coverage screen. It identifies 31 candidates using 2019–2021 observations only; 30 have usable archived records and evaluated expanded forecast models. The dashboard Station comparison tab shows the screening reasons. New-period evaluation boundaries are recorded in `docs/expanded_evaluation_protocol.json`; training on recent data remains gated on source verification.
 
-Recent 2024–2025 pollutant release acquisition and quality findings are documented in [recent data audit](reports/recent_data_audit.md). These staged observations are not yet integrated into forecasts; the dashboard date range and reported model scores remain retrospective.
+Recent concentration acquisition and quality findings are documented in [recent data audit](reports/recent_data_audit.md). The 2017-2025 concentration model uses the documented chronological split: train 2017-2023, select in 2024 and test once in 2025. The AQI forecast date range and reported AQI scores remain retrospective until official 2024-2025 AQI targets are acquired.
 

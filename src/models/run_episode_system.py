@@ -8,6 +8,7 @@ from pathlib import Path
 import json
 import time
 import platform
+import os
 import joblib
 import numpy as np
 import pandas as pd
@@ -18,8 +19,11 @@ from src.features.hourly import build, split_masks
 from src.episode_detection.timeline import evaluate
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT/'experiments/results/v2'
-MODELS = ROOT/'experiments/models/v2'
+EXPERIMENT = os.environ.get('DELHI_EXPERIMENT', 'v2')
+OUT = ROOT/'experiments/results'/EXPERIMENT
+MODELS = ROOT/'experiments/models'/EXPERIMENT
+DATA_PATH = Path(os.environ.get('DELHI_MODEL_DATA', ROOT/'data/processed/delhi_hourly_v2.parquet'))
+FIT_STRIDE = max(1, int(os.environ.get('DELHI_TRAIN_STRIDE', '1')))
 KEY_HORIZONS = [1,6,12,24]
 BASE = dict(n_estimators=180,max_depth=4,learning_rate=.06,min_child_weight=5,
             subsample=.8,colsample_bytree=.8,gamma=0,reg_alpha=0,reg_lambda=5)
@@ -39,7 +43,7 @@ def scores(y,p):
 
 
 def load():
-    panel = pd.read_parquet(ROOT/'data/processed/delhi_hourly_v2.parquet').sort_values(['station_name','timestamp']).reset_index(drop=True)
+    panel = pd.read_parquet(DATA_PATH).sort_values(['station_name','timestamp']).reset_index(drop=True)
     xs = []
     for _,g in panel.groupby('station_name',sort=True):
         x, groups = build(g)
@@ -95,7 +99,8 @@ def main():
         candidates = []
         for kind,group,par in configs:
             cols = groups[group]
-            est = None if kind in ['persistence','seasonal_naive'] else model(kind,par).fit(x.loc[masks['train'],cols],y[masks['train']])
+            fit_rows = np.flatnonzero(masks['train'])[::FIT_STRIDE]
+            est = None if kind in ['persistence','seasonal_naive'] else model(kind,par).fit(x.loc[fit_rows,cols],y.iloc[fit_rows])
             meta = panel.loc[masks['validation']].assign(seasonal=seasonal[masks['validation']])
             p = predict(est,x.loc[masks['validation'],cols],meta,h,kind)
             m = scores(y[masks['validation']],p)
@@ -156,7 +161,8 @@ def main():
         elif cfg['model'] in ['persistence','seasonal_naive']:
             est = None
         else:
-            est = model(cfg['model'],cfg['parameters']).fit(x.loc[masks['train'],cols],y[masks['train']])
+            fit_rows = np.flatnonzero(masks['train'])[::FIT_STRIDE]
+            est = model(cfg['model'],cfg['parameters']).fit(x.loc[fit_rows,cols],y.iloc[fit_rows])
         joblib.dump(est,MODELS/f'h{h}.joblib')
         cfg = dict(cfg,anchor_horizon=anchor)
         # Each hour's interval is separately calibrated, including intermediate hours.
@@ -178,7 +184,9 @@ def main():
     pd.concat(trajectory).to_parquet(OUT/'daily_trajectories.parquet',index=False)
     evaluate_outputs()
     (OUT/'run_manifest.json').write_text(json.dumps({'python':platform.python_version(),'completed_at_unix':time.time(),
-        'seed':42,'hpo_stride':4,'rf_parameters':model('random_forest').get_params(),'test_previously_inspected':True},indent=2))
+        'seed':42,'hpo_stride':4,'rf_parameters':model('random_forest').get_params(),
+        'data_path':str(DATA_PATH),'stations':int(panel.station_name.nunique()),'fit_stride':FIT_STRIDE,
+        'test_previously_inspected':True},indent=2))
 
 
 def evaluate_outputs(results_dir=OUT):

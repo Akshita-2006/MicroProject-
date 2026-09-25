@@ -2,23 +2,23 @@
 
 ## What this dashboard shows
 
-This dashboard uses past records to show what a forecast would have looked like at a selected time in 2023. It predicts AQI for each of the next 24 hours at seven Delhi monitoring stations. AQI describes air pollution; higher values mean worse air quality.
+This dashboard uses past records to show what a forecast would have looked like at a selected time in 2023. It predicts AQI for each of the next 24 hours at 30 Delhi monitoring stations. AQI describes air pollution; higher values mean worse air quality.
 
-It does not show today's conditions. The 2024 and 2025 pollutant files have been downloaded and checked for missing records, but they have not been used to train these models. A later coverage check found 31 possible stations for expansion; these are not 31 additional trained models.
+It does not show today's conditions. The shared date selector also supports recorded pollutant concentrations for 2024–2025. Seven concentration models were trained on 2017–2023, checked in 2024, and evaluated once on 2025. Their predictions are separate from the AQI replay model.
 
 ## Where the data comes from
 
-AQI comes from the public Vonter/india-cpcb-aqi archive, which collects CPCB data. The working dataset covers 2017–2023. The seven station names were checked against an official CPCB list. Some source IDs are faulty, and the AQI timezone is assumed to be Indian Standard Time (IST); that assumption still needs official confirmation.
+AQI comes from the public Vonter/india-cpcb-aqi archive, which collects CPCB data. The working dataset covers 2017–2023. Thirty station records passed the completed historical quality and evaluation process. Some source IDs are faulty, and the AQI timezone is assumed to be Indian Standard Time (IST); that assumption still needs official confirmation.
 
-Weather comes from Open-Meteo historical records for one Delhi location. All seven stations use the same regional weather, which cannot describe every station's local conditions.
+Weather comes from Open-Meteo historical records for one Delhi location. All stations use the same regional weather, which cannot describe every station's local conditions.
 
 Official CPCB access now works again. Saved exports include 2025 Alipur and Anand Vihar pollutant samples, a 2026 Alipur sample and Anand Vihar’s January 2026 hourly AQI workbook. These are useful checks, but they do not verify every station, date, timezone or quality rule. The January AQI workbook covers only one station and month.
 
-## Why only seven stations?
+## Why 30 stations?
 
-The original selection required at least 85% of hourly AQI readings during 2017–2021, with no conflicting readings at the same time. Seven stations passed. This rule can exclude useful stations whose records started later.
+The original selection required at least 85% of hourly AQI readings during 2017–2021, with no conflicting readings at the same time. A later historical-panel build and evaluation produced 30 eligible stations. The station selector contains those 30 evaluated stations.
 
-A later check used 2019–2021 and found 31 candidates. The Station comparison tab shows the reasons. Their data must still be verified and their forecasts evaluated before they can enter the selector.
+A separate 2019–2021 coverage screen identified 31 candidates. The Station comparison tab retains that audit for transparency; passing a coverage screen alone does not establish an evaluated forecast.
 
 ## How a forecast is made
 
@@ -37,7 +37,7 @@ If some past values are missing, a separately trained backup model can be used. 
 | July–December 2022 | Set prediction ranges |
 | 2023 | Compare forecasts with recorded observations |
 
-An earlier version of this project had already examined 2023. A test on a later, previously unused period is still needed. There are no model results for 2024, 2025 or 2026 yet.
+The AQI replay model has no broad 2024–2025 hourly AQI target panel, so its chart and AQI metrics remain limited to 2023. The separate concentration models have a later untouched 2025 test period. There are no 2026 model results.
 
 ## What counts as a pollution episode?
 
@@ -66,6 +66,6 @@ The feature chart shows which inputs the main model uses most across its predict
 
 ## What still needs work
 
-The main tasks are verifying source times and station IDs, preparing recent AQI and weather, testing pollutant inputs, training more stations and evaluating later years. A live service would also need current data and checks on reporting delays.
+The remaining task for later AQI testing is a broad, verified 2024–2025 hourly AQI target panel. A live service would also need current data and checks on reporting delays. The completed concentration-model work is recorded in the project status and checklist.
 
 Full calculation details are in `docs/methodology_v2.md`. Current results are in `reports/project_status.md`, and remaining tasks are in `docs/remaining_checklist.md`.

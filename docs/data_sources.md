@@ -1,4 +1,4 @@
-# Data used by the project
+# Data used by the project - 25 September 2026
 
 ## AQI
 
@@ -10,7 +10,9 @@ An official CPCB January 2026 hourly AQI workbook for Anand Vihar is stored unde
 
 ## Pollutant measurements
 
-The 2017, 2024 and 2025 releases contain pollutant concentrations, not the hourly AQI target used by the current models. The Delhi subsets contain 1,368,606 rows for 2024 and 1,366,609 for 2025.
+The public [annual release catalog](https://github.com/Vonter/india-cpcb-aqi/releases) contains pollutant concentrations, not the hourly AQI target used by the current models. Delhi subsets for every year from 2017 through 2025 are stored locally and checked with the release SHA-256 metadata.
+
+The target concentration-model split is: 2017-2023 training, 2024 selection, and untouched 2025 testing. The continuous panel has 2,361,483 station-hour records across 30 matched stations.
 
 Official exports for Alipur and Anand Vihar were saved to compare with the mirror data. They support the visible 15-minute interval labels for those samples only. The source timezone, quality flags, reporting delay and broader station/date coverage still need checking. No AQI target is derived from pollutant concentrations.
 
