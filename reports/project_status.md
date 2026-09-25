@@ -10,7 +10,7 @@ The dashboard provides 30-station AQI replay forecasts for 2023 and a separate r
 |---|---|
 | AQI forecasts | 30 eligible Delhi stations, 2017-2023 AQI/weather panel and direct 1-24 hour XGBoost models. |
 | 2023 accuracy | Average MAE: 25.32 (1h), 48.20 (6h), 52.47 (12h), and 55.52 (24h) AQI points. |
-| Dashboard | Shared station/date/time controls, AQI replay, episode timeline, accuracy tab, historical trends, source-linked pollutant records, station-relative colour cards with plain-language effects, and optional precaution profile. |
+| Dashboard | Shared station/date/time controls, AQI replay, episode timeline, accuracy tab, historical trends, source-linked pollutant records, station-relative colour cards with plain-language effects, 2024 validation and 2025 concentration forecasts, and optional precaution profile. |
 | Pollutant source releases | Continuous 2017-2025 annual releases are stored; newly acquired 2018-2023 files were SHA-256 checked. |
 | Recent weather | Regional Delhi weather is staged through 9 September 2026. |
 | Concentration evaluation | 2017-2023 training, 2024 validation and untouched 2025 testing completed for PM2.5, PM10, NO2, ozone, SO2, CO and benzene. |

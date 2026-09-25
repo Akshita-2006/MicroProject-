@@ -23,6 +23,13 @@
 - [ ] Obtain a broad, official 2024-2025 hourly AQI target panel. The annual concentration release cannot substitute for this target.
 - [ ] Retrain or evaluate the AQI model on the approved 2017-2025 target split after that panel passes validation.
 
+## Future extensions, outside the current dashboard scope
+
+- [ ] Add a verified live or near-real-time CPCB feed, including publication-delay and quality checks.
+- [ ] Add station-specific weather observations instead of one regional Delhi weather series.
+- [ ] Add a verified 2026 annual concentration release after the year is complete and published.
+- [ ] Assess health-outcome or hospital-admission data only with the required approvals and privacy safeguards; do not infer individual medical outcomes from pollution records alone.
+
 ## Future scope
 
 - [ ] Live CPCB feed and real-time warning operation.

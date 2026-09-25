@@ -55,9 +55,9 @@ The launcher prefers the repository's `.venv` interpreter, otherwise uses `pytho
 ## Using the dashboard
 
 1. Select a monitoring station in the sidebar.
-2. Choose a date and issue hour in IST. The same selection is used by every tab. The AQI replay chart has evaluated target data through 2023; dates in 2024–2025 show the recorded pollutant concentrations and the 2025 concentration forecasts.
+2. Choose a date and issue hour in IST. The same selection is used by every tab. The AQI replay chart has evaluated target data through 2023. For 2024–2025, the main page changes to a concentration-forecast view with all seven pollutants across +1, +6, +12 and +24 hours.
 3. Open **Forecast & episode** for the observed AQI, four forecast horizons, uncertainty bands, episode details and forecast download.
-4. Open **Pollutants** to view the corresponding selected date. Changing the date there also changes the sidebar date. Each recorded pollutant has a green, yellow, or red comparison against that station's 2025 readings, plus plain-language hazard information. In 2025, the tab also shows 1/6/12/24-hour concentration forecasts and held-out 2025 accuracy.
+4. Open **Pollutants** to view the corresponding selected date. Changing the date there also changes the sidebar date. Each recorded pollutant has a green, yellow, or red comparison against that station's 2025 readings, plus plain-language hazard information. In both 2024 and 2025, the tab shows 1/6/12/24-hour concentration forecasts; it labels 2024 validation accuracy separately from untouched 2025 test accuracy.
 
 For a starting example, use Shadipur, 1 November 2023, 12:00 IST. Forecasts use history through the selected issue time. Incomplete past history uses the separately validated fallback when available; no forecast is made if the current AQI is missing. If AQI is not predicted to fall below 301 within 24 hours, its end time is shown as unknown.
 

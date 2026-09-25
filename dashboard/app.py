@@ -31,15 +31,10 @@ st.markdown('''<style>
 [data-testid="stMetricValue"] {font-size:1.3rem} [data-testid="stSidebar"] {background:#e8eff3} .block-container {padding-top:2.3rem}
 </style>''',unsafe_allow_html=True)
 st.caption('DELHI AIR QUALITY PROJECT')
-st.title('Pollution episode early warning')
-st.write('See predicted AQI for the next 24 hours and when sustained pollution may start and end.')
 EXPANDED_OUT = ROOT/'experiments/results/all_eligible_30'
 EXPANDED_DATA = ROOT/'data/processed/delhi_hourly_all_eligible.parquet'
 USE_EXPANDED = (EXPANDED_OUT/'run_manifest.json').exists() and EXPANDED_DATA.exists()
 EXPERIMENT = 'all_eligible_30' if USE_EXPANDED else 'v2'
-st.info(('Past-data demonstration: 30 Delhi stations, with forecast dates in 2023.' if USE_EXPANDED else
-         'Past-data demonstration: seven stations, with forecast dates in 2023. The expanded 30-station models are being prepared.')+
-        ' This is not live monitoring or an official CPCB advisory.')
 OUT = EXPANDED_OUT if USE_EXPANDED else ROOT/'experiments/results/v2'
 COMBINED = ROOT/'experiments/results/combined_system'
 ACTIVE = OUT if USE_EXPANDED else (COMBINED if (COMBINED/'complete.json').exists() else OUT)
@@ -88,6 +83,11 @@ def concentration_forecasts(station, issued):
                 if feature.startswith('station_'): row[feature]=float(feature=='station_'+station)
             rows.append({'Pollutant':target,'Hours ahead':h,'Predicted concentration':float(saved['model'].predict(row[saved['features']])[0])})
     return pd.DataFrame(rows)
+def concentration_table(predicted):
+    table = predicted[predicted['Hours ahead'].isin([1, 6, 12, 24])].pivot(
+        index='Pollutant', columns='Hours ahead', values='Predicted concentration'
+    ).reindex(columns=[1, 6, 12, 24]).reset_index()
+    return table.rename(columns={1: '+1 hour', 6: '+6 hours', 12: '+12 hours', 24: '+24 hours'}).round(2)
 @st.cache_data
 def infer(station, issued, artifact_revision):
     p = load_data(DATA.stat().st_mtime_ns)
@@ -102,16 +102,37 @@ history = data[data.station_name == station].sort_values('timestamp')
 day = st.sidebar.date_input('Selected date',min_value=pd.Timestamp('2023-01-01').date(),max_value=pd.Timestamp('2025-12-31').date(),key='selected_date',on_change=sync_sidebar_date)
 hour = st.sidebar.slider('Forecast starting hour · IST',0,23,12)
 issued = pd.Timestamp(day)+pd.Timedelta(hours=hour)
-st.sidebar.caption('The forecast uses the historical AQI record. Newer pollutant readings are displayed only after their source details are checked.')
-st.sidebar.caption('The forecast uses readings up to your chosen time. A backup model handles gaps in past readings. No forecast is made if the current AQI is missing.')
-current_values = history.loc[history.timestamp == issued, 'aqi']
-current = current_values.iloc[0] if not current_values.empty else float('nan')
+aqi_mode = issued.year <= 2023
+recent_concentration_forecast = concentration_forecasts(station, issued) if not aqi_mode else pd.DataFrame()
+if aqi_mode:
+    st.title('Pollution episode early warning')
+    st.write('See predicted AQI for the next 24 hours and when sustained pollution may start and end.')
+    st.info(('Historical AQI forecast demonstration: 30 Delhi stations, evaluated with 2023 observations.' if USE_EXPANDED else
+             'Historical AQI forecast demonstration: seven Delhi stations, evaluated with 2023 observations.')+
+            ' This is not live monitoring or an official CPCB advisory.')
+    st.sidebar.caption('The forecast uses the historical AQI record. Newer pollutant readings are displayed only after their source details are checked.')
+    st.sidebar.caption('The forecast uses readings up to your chosen time. A backup model handles gaps in past readings. No forecast is made if the current AQI is missing.')
+    current_values = history.loc[history.timestamp == issued, 'aqi']
+    current = current_values.iloc[0] if not current_values.empty else float('nan')
+else:
+    st.title('Pollution concentration forecast')
+    st.write('See predicted pollutant concentrations for the next 24 hours at the selected station and time.')
+    st.info('Past-data concentration forecast for 2024–2025. This is not live monitoring or an official CPCB advisory.')
+    st.sidebar.caption('The selected station, date and hour are used for recorded concentrations and the next 24-hour concentration forecast.')
+    current = float('nan')
 cols = st.columns(3)
-cols[0].metric('Observed AQI',f'{current:.0f}' if pd.notna(current) else 'Unavailable')
-cols[1].metric('CPCB category',category(current))
-cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
+if aqi_mode:
+    cols[0].metric('Observed AQI',f'{current:.0f}' if pd.notna(current) else 'Unavailable')
+    cols[1].metric('CPCB category',category(current))
+    cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
+else:
+    cols[0].metric('Selected date',issued.strftime('%d %b %Y'))
+    cols[1].metric('Pollutant forecasts','Available' if not recent_concentration_forecast.empty else 'Unavailable')
+    cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
 st.caption(station+' · This station does not represent all of Delhi.')
-tabs = st.tabs(['Forecast & episode','Historical trends','Pollutants','Model evidence','Station comparison','Methodology'])
+tabs = st.tabs([('Forecast & episode' if aqi_mode else 'Concentration forecast'),
+                ('AQI history' if aqi_mode else 'Concentration history'),
+                'Pollutants','Model evidence','Station comparison','Methodology'])
 with tabs[0]:
     trajectory = None
     if issued.year <= 2023:
@@ -120,7 +141,13 @@ with tabs[0]:
         except ValueError:
             trajectory = None
     else:
-        st.caption('AQI replay charts are available for 2023. The selected 2024–2025 date is used in Pollutants for recorded concentrations and concentration forecasts.')
+        st.subheader('Pollutant forecast for the next 24 hours')
+        concentration_view = recent_concentration_forecast
+        if concentration_view.empty:
+            st.info('A pollutant forecast needs 73 continuous recorded hours for every pollutant. This station or time does not have enough complete history.')
+        else:
+            st.dataframe(concentration_table(concentration_view), hide_index=True, width='stretch')
+            st.caption('Each row is one pollutant. The four columns show all next-hour forecasts from the selected station, date and hour.')
     if trajectory is not None:
         if trajectory.route.eq('missing_history_fallback').any():
             st.info('Some past readings are missing. A backup model trained for these gaps is being used, with its own prediction ranges.')
@@ -156,9 +183,22 @@ with tabs[0]:
         st.download_button('Download this forecast',trajectory.to_csv(index=False),'forecast.csv','text/csv')
 with tabs[1]:
     days = st.slider('History window · days',7,90,30)
-    recent = history[(history.timestamp <= issued)&(history.timestamp > issued-pd.Timedelta(days=days))]
-    st.plotly_chart(px.line(recent,x='timestamp',y='aqi',template='plotly_white',labels={'timestamp':'Observation time · IST','aqi':'AQI'}),width='stretch')
-    st.caption('Gaps mean missing readings. Separate pollutant measurements are not model inputs yet because their timestamps need verification.')
+    if aqi_mode:
+        recent = history[(history.timestamp <= issued)&(history.timestamp > issued-pd.Timedelta(days=days))]
+        st.plotly_chart(px.line(recent,x='timestamp',y='aqi',template='plotly_white',labels={'timestamp':'Observation time · IST','aqi':'AQI'}),width='stretch')
+        st.caption('Gaps mean missing readings. Separate pollutant measurements are not model inputs in the historical AQI model.')
+    else:
+        panel = load_concentration_panel()
+        available = [column for column in panel.columns if column not in ['station_name', 'timestamp']]
+        pollutant = st.selectbox('Pollutant to display', available, key='concentration_history_pollutant')
+        recent = panel[(panel.station_name == station) & (panel.timestamp <= issued) &
+                       (panel.timestamp > issued-pd.Timedelta(days=days))]
+        if recent.empty or recent[pollutant].dropna().empty:
+            st.info('No recorded concentration history is available for this station, pollutant and selected period.')
+        else:
+            st.plotly_chart(px.line(recent,x='timestamp',y=pollutant,template='plotly_white',
+                                    labels={'timestamp':'Observation time · IST', pollutant:'Recorded concentration'}),width='stretch')
+            st.caption('This graph shows recorded concentration history for the same selected station and period.')
 with tabs[2]:
     st.subheader('Pollutant information')
     st.write('See recorded pollutant concentrations for the selected station. These values are separate from the AQI forecast and are not a medical diagnosis.')
@@ -227,18 +267,20 @@ with tabs[2]:
         st.info('No matching 2024–2025 source station was found for this selected station.')
     st.caption('Source: CPCB-derived 2024–2025 station concentration releases, downloaded from the project source record. Times are displayed exactly as supplied by that release. Values are recorded observations, not forecasts.')
     st.link_button('Open the source release page','https://github.com/Vonter/india-cpcb-aqi/releases')
-    if pollutant_year == 2025:
+    if pollutant_year in [2024, 2025]:
         st.subheader('Predicted concentrations for the next 24 hours')
         predicted = concentration_forecasts(station, pd.Timestamp(pollutant_day) + pd.Timedelta(hours=pollutant_hour))
         if predicted.empty:
             st.info('A forecast needs 73 continuous recorded hours for every pollutant. This station or time does not have enough complete history.')
         else:
-            st.dataframe(predicted[predicted['Hours ahead'].isin([1,6,12,24])],hide_index=True,width='stretch')
+            st.dataframe(concentration_table(predicted),hide_index=True,width='stretch')
             scores=pd.read_csv(ROOT/'experiments/results/concentrations_2017_2025/metrics.csv')
-            score_view=scores[(scores['split']=='test_2025') & (scores['horizon'].isin([1,6,12,24]))][['pollutant','horizon','mae','r2']]
-            st.subheader('2025 forecast accuracy')
+            split = 'validation_2024' if pollutant_year == 2024 else 'test_2025'
+            score_view=scores[(scores['split']==split) & (scores['horizon'].isin([1,6,12,24]))][['pollutant','horizon','mae','r2']]
+            st.subheader(f'{pollutant_year} forecast accuracy')
             st.dataframe(score_view.rename(columns={'pollutant':'Pollutant','horizon':'Hours ahead','mae':'Average error','r2':'R² quality score'}),hide_index=True,width='stretch')
-            st.caption('R² is a model-quality score, not a pollutant percentage. Higher is better; it describes how closely predictions followed observed 2025 changes.')
+            period_label = '2024 validation' if pollutant_year == 2024 else 'untouched 2025 test'
+            st.caption(f'R² is a model-quality score, not a pollutant percentage. Higher is better; it describes how closely predictions followed observed changes in the {period_label}.')
     st.markdown('**Optional personal precautions**')
     age = st.selectbox('Age group',['Not shared','Under 18','18 to 64','65 or older'])
     lung = st.selectbox('Has a clinician previously told you about asthma, COPD, or another long-term lung condition?',['Not shared','No','Yes'])
