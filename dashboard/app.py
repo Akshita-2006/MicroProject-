@@ -46,11 +46,17 @@ if not DATA.exists() or not (OUT/'run_manifest.json').exists():
 def load_data(data_revision):
     return pd.read_parquet(DATA)
 @st.cache_data
-def load_pollutants(year):
+def load_pollutants(year, station_name=None):
     path = ROOT/f'data/interim/delhi_pollutants_{year}_source_release.parquet'
     if not path.exists():
         path = ROOT/f'data/interim/delhi_pollutants_{year}_unverified.parquet'
-    return pd.read_parquet(path) if path.exists() else pd.DataFrame()
+    if not path.exists():
+        return pd.DataFrame()
+    if station_name is None:
+        return pd.read_parquet(path, columns=['Station Name'])
+    columns=['Station Name','Timestamp','PM2.5 (µg/m³)','PM10 (µg/m³)','NO2 (µg/m³)',
+             'Ozone (µg/m³)','SO2 (µg/m³)','CO (mg/m³)','Benzene (µg/m³)']
+    return pd.read_parquet(path, columns=columns, filters=[('Station Name','==',station_name)])
 def source_station_name(station, names):
     normalize = lambda text: re.sub(r'[^a-z0-9]', '', re.sub(r'\b(delhi|cpcb|dpcc|imd|iitm)\b', '', text.lower()))
     target = normalize(station)
@@ -218,9 +224,10 @@ if selected_view == tab_labels[2]:
                                   min_value=pd.Timestamp('2024-01-01').date(),max_value=pd.Timestamp('2025-12-31').date(),key='pollutant_date',on_change=sync_pollutant_date)
     pollutant_year = pollutant_day.year
     pollutant_hour = hour
-    pollutant_data = load_pollutants(pollutant_year)
-    source_station = source_station_name(station, pollutant_data['Station Name'].dropna().unique()) if not pollutant_data.empty else None
+    station_names = load_pollutants(pollutant_year)
+    source_station = source_station_name(station, station_names['Station Name'].dropna().unique()) if not station_names.empty else None
     if source_station:
+        pollutant_data = load_pollutants(pollutant_year,source_station)
         timestamp = pd.Timestamp(pollutant_day) + pd.Timedelta(hours=pollutant_hour)
         records = pollutant_data[(pollutant_data['Station Name'] == source_station) &
                                  (pd.to_datetime(pollutant_data['Timestamp']).dt.tz_localize(None) == timestamp)]
@@ -254,8 +261,9 @@ if selected_view == tab_labels[2]:
                     'Carbon monoxide': 'Can reduce oxygen delivery and can be more concerning for people with heart conditions.',
                     'Benzene': 'Benzene is a recognised carcinogenic hazard. A short-term reading does not estimate an individual cancer risk.'
                 }
-                reference = load_pollutants(2025)
-                reference_station = source_station_name(station, reference['Station Name'].dropna().unique()) if not reference.empty else None
+                reference_names = load_pollutants(2025)
+                reference_station = source_station_name(station, reference_names['Station Name'].dropna().unique()) if not reference_names.empty else None
+                reference = load_pollutants(2025,reference_station) if reference_station else pd.DataFrame()
                 for item in values:
                     recorded = pd.to_numeric(pd.Series([item['Recorded concentration']]), errors='coerce').iloc[0]
                     source_column = next((column for column, label in value_columns.items() if label == item['Pollutant']), None)
