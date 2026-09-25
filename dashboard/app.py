@@ -59,6 +59,10 @@ def source_station_name(station, names):
 def load_concentration_panel():
     path = ROOT/'data/processed/delhi_concentrations_hourly_2017_2025.parquet'
     return pd.read_parquet(path) if path.exists() else pd.DataFrame()
+@st.cache_resource(show_spinner=False)
+def load_concentration_model(path, revision):
+    """Load each saved concentration model once per dashboard process."""
+    return joblib.load(path)
 def concentration_forecasts(station, issued):
     panel=load_concentration_panel()
     history=panel[(panel.station_name==station)&(panel.timestamp<=issued)].sort_values('timestamp').tail(73)
@@ -78,7 +82,7 @@ def concentration_forecasts(station, issued):
         for h in [1,6,12,24]:
             artifact=ROOT/f'experiments/models/concentrations_2017_2025/{safe}_h{h}.joblib'
             if not artifact.exists(): continue
-            saved=joblib.load(artifact)
+            saved=load_concentration_model(str(artifact), artifact.stat().st_mtime_ns)
             for feature in saved['features']:
                 if feature.startswith('station_'): row[feature]=float(feature=='station_'+station)
             rows.append({'Pollutant':target,'Hours ahead':h,'Predicted concentration':float(saved['model'].predict(row[saved['features']])[0])})
