@@ -137,10 +137,13 @@ else:
     cols[1].metric('Pollutant forecasts','Choose a pollutant below')
     cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
 st.caption(station+' · This station does not represent all of Delhi.')
-tabs = st.tabs([('Forecast & episode' if aqi_mode else 'Concentration forecast'),
-                ('AQI history' if aqi_mode else 'Concentration history'),
-                'Pollutants','Model evidence','Station comparison','Methodology'])
-with tabs[0]:
+tab_labels=[('Forecast & episode' if aqi_mode else 'Concentration forecast'),
+            ('AQI history' if aqi_mode else 'Concentration history'),
+            'Pollutants','Model evidence','Station comparison','Methodology']
+# Unlike st.tabs, this menu runs only the selected page. This keeps the hosted
+# app from reading every large 2024–2025 source file on a single date change.
+selected_view=st.radio('Dashboard section',tab_labels,horizontal=True,label_visibility='collapsed')
+if selected_view == tab_labels[0]:
     trajectory = None
     if issued.year <= 2023:
         try:
@@ -190,7 +193,7 @@ with tabs[0]:
                     st.caption('The episode begins at the first forecast hour; its true onset may be earlier.')
         st.caption('The shaded range aims to cover individual hourly readings; it is not the chance of an episode. Episode times are estimates within the next 24 hours.')
         st.download_button('Download this forecast',trajectory.to_csv(index=False),'forecast.csv','text/csv')
-with tabs[1]:
+if selected_view == tab_labels[1]:
     days = st.slider('History window · days',7,90,30)
     if aqi_mode:
         recent = history[(history.timestamp <= issued)&(history.timestamp > issued-pd.Timedelta(days=days))]
@@ -208,7 +211,7 @@ with tabs[1]:
             st.plotly_chart(px.line(recent,x='timestamp',y=pollutant,template='plotly_white',
                                     labels={'timestamp':'Observation time · IST', pollutant:'Recorded concentration'}),width='stretch')
             st.caption('This graph shows recorded concentration history for the same selected station and period.')
-with tabs[2]:
+if selected_view == tab_labels[2]:
     st.subheader('Pollutant information')
     st.write('See recorded pollutant concentrations for the selected station. These values are separate from the AQI forecast and are not a medical diagnosis.')
     pollutant_day = st.date_input('Selected pollutant date',
@@ -304,7 +307,7 @@ with tabs[2]:
         st.warning('High pollution can be more concerning based on the information you selected. During Poor, Very Poor or Severe air quality, consider reducing prolonged outdoor exertion and follow your clinician’s existing advice.')
     else:
         st.caption('Choose the optional answers above for a general precaution message. This project does not diagnose illness or predict a medical outcome.')
-with tabs[3]:
+if selected_view == tab_labels[3]:
     st.write('MAE is average error in AQI points; lower is better. RMSE gives more weight to large errors. R² measures fit, not percentage accuracy. Precision measures correct warnings; recall measures detected episodes. F1 combines both.')
     results = pd.read_csv(OUT/'model_comparison.csv')
     if ACTIVE == COMBINED:
@@ -340,7 +343,7 @@ with tabs[3]:
     st.caption('Shows which inputs the main model uses most overall. It does not explain one specific forecast, the backup model or what causes pollution.')
     with st.expander('Detailed model and input comparisons'):
         st.dataframe(results[results.station == 'ALL'],hide_index=True,width='stretch')
-with tabs[4]:
+if selected_view == tab_labels[4]:
     snapshot = data[data.timestamp == issued][['station_name','aqi']].copy()
     snapshot['category'] = snapshot.aqi.map(category)
     st.subheader('Same-time observations across selected stations')
@@ -359,7 +362,7 @@ with tabs[4]:
         st.download_button('Download station coverage audit',expansion.to_csv(index=False),'station_coverage_audit.csv','text/csv')
     else:
         st.info('Generate the expanded coverage audit with python -m src.analysis.reassess_stations.')
-with tabs[5]:
+if selected_view == tab_labels[5]:
     st.markdown((ROOT/'docs/methodology_guide.md').read_text(encoding='utf-8'))
 
 
