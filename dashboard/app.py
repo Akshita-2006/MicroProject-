@@ -63,12 +63,13 @@ def load_concentration_panel():
 def load_concentration_model(path, revision):
     """Load each saved concentration model once per dashboard process."""
     return joblib.load(path)
-def concentration_forecasts(station, issued):
+CONCENTRATION_TARGETS=['PM2.5 (µg/m³)','PM10 (µg/m³)','NO2 (µg/m³)','Ozone (µg/m³)','SO2 (µg/m³)','CO (mg/m³)','Benzene (µg/m³)']
+def concentration_forecasts(station, issued, targets=None):
     panel=load_concentration_panel()
     history=panel[(panel.station_name==station)&(panel.timestamp<=issued)].sort_values('timestamp').tail(73)
     if len(history)<73 or history.timestamp.iloc[-1] != issued:
         return pd.DataFrame()
-    targets=['PM2.5 (µg/m³)','PM10 (µg/m³)','NO2 (µg/m³)','Ozone (µg/m³)','SO2 (µg/m³)','CO (mg/m³)','Benzene (µg/m³)']
+    targets=CONCENTRATION_TARGETS if targets is None else targets
     rows=[]
     for target in targets:
         if history[target].isna().any(): continue
@@ -107,7 +108,9 @@ day = st.sidebar.date_input('Selected date',min_value=pd.Timestamp('2023-01-01')
 hour = st.sidebar.slider('Forecast starting hour · IST',0,23,12)
 issued = pd.Timestamp(day)+pd.Timedelta(hours=hour)
 aqi_mode = issued.year <= 2023
-recent_concentration_forecast = concentration_forecasts(station, issued) if not aqi_mode else pd.DataFrame()
+# Concentration models are deliberately loaded only on request. Loading all 28 models
+# on every date change can exceed the small memory allowance of hosted dashboards.
+recent_concentration_forecast = pd.DataFrame()
 if aqi_mode:
     st.title('Pollution episode early warning')
     st.write('See predicted AQI for the next 24 hours and when sustained pollution may start and end.')
@@ -131,7 +134,7 @@ if aqi_mode:
     cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
 else:
     cols[0].metric('Selected date',issued.strftime('%d %b %Y'))
-    cols[1].metric('Pollutant forecasts','Available' if not recent_concentration_forecast.empty else 'Unavailable')
+    cols[1].metric('Pollutant forecasts','Choose a pollutant below')
     cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
 st.caption(station+' · This station does not represent all of Delhi.')
 tabs = st.tabs([('Forecast & episode' if aqi_mode else 'Concentration forecast'),
@@ -146,12 +149,14 @@ with tabs[0]:
             trajectory = None
     else:
         st.subheader('Pollutant forecast for the next 24 hours')
-        concentration_view = recent_concentration_forecast
-        if concentration_view.empty:
-            st.info('A pollutant forecast needs 73 continuous recorded hours for every pollutant. This station or time does not have enough complete history.')
-        else:
-            st.dataframe(concentration_table(concentration_view), hide_index=True, width='stretch')
-            st.caption('Each row is one pollutant. The four columns show all next-hour forecasts from the selected station, date and hour.')
+        chosen_target=st.selectbox('Pollutant to forecast',CONCENTRATION_TARGETS,key='main_concentration_target')
+        if st.button('Show forecast',key='main_concentration_button'):
+            concentration_view = concentration_forecasts(station,issued,[chosen_target])
+            if concentration_view.empty:
+                st.info('This forecast needs 73 continuous recorded hours for the selected pollutant. This station or time does not have enough complete history.')
+            else:
+                st.dataframe(concentration_table(concentration_view), hide_index=True, width='stretch')
+                st.caption('The four columns show +1, +6, +12 and +24-hour forecasts from the selected station, date and hour.')
     if trajectory is not None:
         if trajectory.route.eq('missing_history_fallback').any():
             st.info('Some past readings are missing. A backup model trained for these gaps is being used, with its own prediction ranges.')
@@ -273,14 +278,17 @@ with tabs[2]:
     st.link_button('Open the source release page','https://github.com/Vonter/india-cpcb-aqi/releases')
     if pollutant_year in [2024, 2025]:
         st.subheader('Predicted concentrations for the next 24 hours')
-        predicted = concentration_forecasts(station, pd.Timestamp(pollutant_day) + pd.Timedelta(hours=pollutant_hour))
-        if predicted.empty:
-            st.info('A forecast needs 73 continuous recorded hours for every pollutant. This station or time does not have enough complete history.')
-        else:
-            st.dataframe(concentration_table(predicted),hide_index=True,width='stretch')
+        selected_target=st.selectbox('Pollutant to forecast',CONCENTRATION_TARGETS,key='pollutant_concentration_target')
+        if st.button('Show forecast',key='pollutant_concentration_button'):
+            predicted = concentration_forecasts(station, pd.Timestamp(pollutant_day) + pd.Timedelta(hours=pollutant_hour),[selected_target])
+            if predicted.empty:
+                st.info('This forecast needs 73 continuous recorded hours for the selected pollutant. This station or time does not have enough complete history.')
+            else:
+                st.dataframe(concentration_table(predicted),hide_index=True,width='stretch')
+        if st.session_state.get('pollutant_concentration_button',False):
             scores=pd.read_csv(ROOT/'experiments/results/concentrations_2017_2025/metrics.csv')
             split = 'validation_2024' if pollutant_year == 2024 else 'test_2025'
-            score_view=scores[(scores['split']==split) & (scores['horizon'].isin([1,6,12,24]))][['pollutant','horizon','mae','r2']]
+            score_view=scores[(scores['split']==split) & (scores['pollutant']==selected_target) & (scores['horizon'].isin([1,6,12,24]))][['pollutant','horizon','mae','r2']]
             st.subheader(f'{pollutant_year} forecast accuracy')
             st.dataframe(score_view.rename(columns={'pollutant':'Pollutant','horizon':'Hours ahead','mae':'Average error','r2':'R² quality score'}),hide_index=True,width='stretch')
             period_label = '2024 validation' if pollutant_year == 2024 else 'untouched 2025 test'
