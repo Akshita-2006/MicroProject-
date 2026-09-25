@@ -65,6 +65,10 @@ def source_station_name(station, names):
 def load_concentration_panel():
     path = ROOT/'data/processed/delhi_concentrations_hourly_2017_2025.parquet'
     return pd.read_parquet(path) if path.exists() else pd.DataFrame()
+@st.cache_data
+def load_calculated_aqi_panel():
+    path = ROOT/'data/processed/delhi_calculated_aqi_hourly_2017_2025.parquet'
+    return pd.read_parquet(path) if path.exists() else pd.DataFrame()
 @st.cache_resource(show_spinner=False)
 def load_concentration_model(path, revision):
     """Load each saved concentration model once per dashboard process."""
@@ -129,8 +133,8 @@ if aqi_mode:
     current = current_values.iloc[0] if not current_values.empty else float('nan')
 else:
     st.title('Pollution concentration forecast')
-    st.write('See predicted pollutant concentrations for the next 24 hours at the selected station and time.')
-    st.info('Past-data concentration forecast for 2024–2025. This is not live monitoring or an official CPCB advisory.')
+    st.write('See the calculated AQI and pollutant concentrations for the selected station and time.')
+    st.info('Calculated AQI uses the project pollutant panel and CPCB breakpoint rules. It is not live monitoring, an official CPCB AQI release, or an official advisory.')
     st.sidebar.caption('The selected station, date and hour are used for recorded concentrations and the next 24-hour concentration forecast.')
     current = float('nan')
 cols = st.columns(3)
@@ -139,8 +143,11 @@ if aqi_mode:
     cols[1].metric('CPCB category',category(current))
     cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
 else:
-    cols[0].metric('Selected date',issued.strftime('%d %b %Y'))
-    cols[1].metric('Pollutant forecasts','Choose a pollutant below')
+    calculated = load_calculated_aqi_panel()
+    selected_aqi = calculated[(calculated.station_name == station) & (calculated.timestamp == issued)].calculated_aqi
+    value = selected_aqi.iloc[0] if not selected_aqi.empty else float('nan')
+    cols[0].metric('Calculated AQI',f'{value:.0f}' if pd.notna(value) else 'Unavailable')
+    cols[1].metric('AQI category',category(value))
     cols[2].metric('Forecast starts · IST',issued.strftime('%H:%M'))
 st.caption(station+' · This station does not represent all of Delhi.')
 tab_labels=[('Forecast & episode' if aqi_mode else 'Concentration forecast'),

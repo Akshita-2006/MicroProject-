@@ -2,19 +2,19 @@
 
 A Python project that predicts air pollution at Delhi monitoring stations for each of the next 24 hours. It estimates when a period of high pollution may start, reach its peak and end.
 
-**Current state:** 30 eligible Delhi stations, historical observations from 2017–2023, saved trained models and a Streamlit replay dashboard. It is not a live monitoring feed or an official CPCB advisory. The dashboard also contains a voluntary precaution profile; it does not diagnose disease or predict a medical outcome.
+**Current state:** 30 Delhi stations, a uniform 2017–2025 pollutant panel, and local calibrated-AQI forecast artifacts. The calibrated-AQI model trains on 2017–2023, validates on 2024, and reports a one-time 2025 test. It is not a live monitoring feed, official CPCB AQI release, or medical advisory.
 
 ## Current progress — 25 September 2026
 
 | Area | Current state |
 |---|---|
-| Running forecasts | 30 evaluated stations; historical AQI/weather data from 2017–2023. AQI replay charts use 2023, while the shared date selector also supports the 2024–2025 concentration view. |
+| Calibrated-AQI experiment | Calculated AQI is calibrated against archived official AQI through 2022 and checked on untouched 2023 official observations (R² 0.903). Forecast models use 2017–2023 training, 2024 validation, and 2025 test data. |
 | Recent data | Delhi concentration releases for every year from 2017 through 2025 are stored and SHA-256 checked against their release metadata. |
 | Official evidence | CPCB viewer and spreadsheet exports work again. Saved evidence includes 2025 pollutant samples for Alipur and Anand Vihar, a 2026 Alipur sample, and Anand Vihar’s January 2026 hourly AQI workbook. This is not a city-wide recent AQI dataset. |
 | Station expansion | 31 coverage candidates were identified among 39 historical stations. Thirty have usable 2017–2023 archived records and were trained in the expanded pooled model. |
 | Concentration forecasts | 2,361,483 hourly station records across 30 stations. Seven pollutant models trained on 2017-2023, checked in 2024 and tested once on 2025. |
 | Dashboard and tests | The 2024 validation and 2025 test concentration forecasts, accuracy views, and concentration-history chart are connected to the dashboard. The project has 21 passing automated tests. |
-| Remaining work | Obtain broad official 2024-2025 hourly AQI targets only if the AQI model must also extend through 2025; live data remains future scope. |
+| Limitation | 2024–2025 targets are calibrated from pollutant data, not official CPCB hourly AQI releases. Live monitoring remains future scope. |
 
 See [current project status](reports/project_status.md) for the complete evidence and [remaining checklist](docs/remaining_checklist.md) for next steps. The results below remain 2023 retrospective scores, not results from the newly acquired data.
 

@@ -1,0 +1,7 @@
+{
+  "target": "calibrated AQI",
+  "train": "2017-2023",
+  "validation": "2024",
+  "test": "2025",
+  "calibration": "fit through 2022; official overlap tested on 2023"
+}

@@ -1,6 +1,6 @@
 # Dashboard
 
-The dashboard runs from `dashboard/app.py`. It shows saved AQI replay forecasts for 30 eligible Delhi stations at selected times in 2023, plus recorded 2024–2025 pollutant concentrations.
+The dashboard runs from `dashboard/app.py`. It shows archived AQI history through 2023 and a local calculated-AQI plus pollutant view for 2024–2025. Calculated AQI is not an official CPCB AQI release.
 
 Follow the installation commands in the [main README](../README.md). From the repository root, use the Python environment where you installed the dependencies:
 
