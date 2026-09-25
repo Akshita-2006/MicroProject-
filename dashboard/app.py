@@ -22,7 +22,7 @@ def sync_sidebar_date():
     if selected >= pd.Timestamp('2024-01-01').date():
         st.session_state.pollutant_date = selected
 if 'selected_date' not in st.session_state:
-    st.session_state.selected_date = pd.Timestamp('2023-11-01').date()
+    st.session_state.selected_date = pd.Timestamp('2025-11-08').date()
 if 'pollutant_date' not in st.session_state:
     st.session_state.pollutant_date = pd.Timestamp('2024-01-01').date()
 st.markdown('''<style>
