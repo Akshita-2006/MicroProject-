@@ -1,14 +1,28 @@
-# Delhi Pollution Episode Forecasting — Engineering Report
+# Delhi Air-Quality Forecasting — Historical Engineering Report with Current Addendum
 
-## Current completion status — 25 September 2026
+## Current completion status — reconciled 29 October 2026
 
-The authoritative current status is in [project_status.md](project_status.md). The AQI replay system now has 30 evaluated stations and 21 passing automated tests. Public concentration releases for every year from 2017 through 2025 were downloaded, SHA-256 verified and filtered to Delhi. Concentration models were trained on 2017-2023, selected in 2024 and tested once on 2025.
+The authoritative current status is in [project_status.md](project_status.md)
+and the current acceptance decision is in [acceptance evidence](../docs/acceptance.md).
+The dashboard now has 30 evaluated historical-AQI stations and 21 recorded
+passing automated tests. Public concentration releases for every year from
+2017 through 2025 were downloaded, SHA-256 verified and filtered to Delhi.
+Concentration models were trained on 2017-2023, selected in 2024 and tested
+once on 2025. A separate calibrated-AQI experiment uses this concentration
+panel; its target is not an official 2024-2025 CPCB AQI observation.
 
-This does not create a complete 2024-2025 hourly AQI target dataset: the annual releases contain concentrations, not hourly AQI targets. The AQI model is therefore still evaluated through 2023, while the completed concentration model is evaluated through 2025. The checklist at `docs/remaining_checklist.md` is the current execution plan.
+This does not create a complete 2024-2025 hourly **official** AQI target
+dataset: the annual releases contain concentrations, not official hourly AQI
+targets. The archived-AQI replay model is therefore evaluated through 2023,
+while the concentration model and the separately labelled calibrated-AQI
+experiment are evaluated through 2025. The checklist at
+`docs/remaining_checklist.md` is the current execution plan.
 
-## Historical status snapshot — 14 September 2026
+## Superseded status snapshot — 14 September 2026
 
-**Historical status at 14 September:** the working deliverable was a seven-station historical AQI forecasting and episode-warning prototype. Recent pollutant data had been acquired and audited, but was not integrated into saved models. No 2024–2026 model performance was claimed.
+This snapshot is retained for provenance only. At that time the working
+deliverable was a seven-station prototype. It must not be read as the current
+system description or acceptance status.
 
 ## Completed and verified
 
@@ -20,20 +34,25 @@ This does not create a complete 2024-2025 hourly AQI target dataset: the annual 
 | Missing-history fallback | Backup model for gaps in past readings. Forecasts were produced for 94.6% of scheduled daily windows; 74.3% had enough future readings to score episodes. These are coverage figures, not accuracy. |
 | Uncertainty and explanation | Prediction ranges for individual hours and a chart of model inputs. These do not explain pollution causes or give episode probabilities. |
 | Recent data acquisition | 2024: 1,368,606 Delhi rows, 39 station IDs. 2025: 1,366,609 rows, 40 IDs. Both public mirror release hashes verified; data quality tables generated. |
-| Expansion coverage screen | 31 candidates among 39 archived AQI stations using 2019–2021 data only. Candidate status does not mean a trained or validated model. |
-| Evaluation design | Expanded split recorded before new-period model scores: train through 2023; selection/calibration in separate halves of 2024; external tests planned for 2025 and available 2026. |
-| Dashboard and documentation | Historical replay, forecast/episode plots, model evidence, station comparison with expansion reasons, portable public-repository setup instructions. |
-| Automated validation | Latest full suite: 17 tests passed. Streamlit application check passed after the station-audit view was added; the later interval helper is not connected to the dashboard. |
+| Expansion coverage screen | 30 eligible archived-AQI stations now have evaluated historical replay models. The original 31st candidate remains documented with its readiness reason. |
+| Evaluation design | Archived-AQI replay uses 2017–2023 data and is evaluated through 2023. Concentration and calibrated-AQI experiments use train 2017–2023, validation 2024 and untouched test 2025. |
+| Dashboard and documentation | 30-station historical AQI replay through 2023; recorded and forecast concentration views for 2024–2025; model evidence, station comparison and portable setup instructions. |
+| Automated validation | Latest recorded full suite: 21 tests passed. Streamlit AppTest/smoke checks cover the 30-station dashboard and concentration views; a dated final rerun remains a release gate. |
 
-## Partial work — not yet accepted as complete
+## Remaining limitations and release gates
 
 - **Source verification:** local AQI archive matched to the pinned mirror; seven station names/agencies matched to an official CPCB PDF. Defective AQI IDs and timezone assumptions remain unresolved.
 - **Official pollutant comparison:** ten Alipur rows from 1 January 2025 matched 66 numeric and 14 missing cells. Mirror clock labels match official interval starts. This proves only that sample, not all stations, years, timezone or reporting latency.
 - **Pollutant time aggregation:** implemented and tested with explicit caller-specified timezone, interval-end labels, missing-quarter counts and optional publication delay. It remains outside training pending broader source checks. The three-of-four completeness default is a research choice.
-- **Recent data:** 2024–2025 pollutant releases are staged for audit, not model-ready. They contain 15-minute concentrations, not the AQI target used by current models. No verified 2026 observations have been acquired.
-- **Station coverage:** seven evaluated stations remain forecastable. The 31 candidates are shown in the audit, not added to the forecast selector.
+- **Recent data:** the 2017–2025 concentration panel is model-ready for the
+  completed concentration and calibrated-AQI experiments. It is not a broad
+  official 2024–2025 hourly AQI target panel, and no verified full-year 2026
+  dataset is claimed.
+- **Station coverage:** 30 archived-AQI stations are forecastable in replay.
+  The historical 31-candidate screen remains provenance for the expansion
+  decision, not a claim about a 31st deployed model.
 
-## Current model results — unchanged 2023 retrospective evaluation
+## Archived-AQI replay results — 2023 retrospective evaluation
 
 | Horizon | MAE (AQI points) | RMSE | R² |
 |---|---:|---:|---:|
@@ -48,14 +67,18 @@ These combined results cover a broader population than the primary complete-hist
 
 ## Remaining work, in execution order
 
-1. Restore usable official source access and expand station/period comparisons. Establish timezone, station identity, interval boundary and quality/latency semantics.
-2. Obtain recent AQI targets or validate their derivation from concentrations; acquire available 2026 observations. Do not treat 2026 as a complete year.
-3. Complete source-audited pollutant/weather integration, including recent and station-specific weather assessment, and freeze the expanded model-ready dataset and station roster.
-4. Execute expanded baseline/model comparisons, feature ablations, time-aware tuning and recalibration using the recorded split. Test pollutant usefulness rather than assuming it.
-5. Evaluate untouched 2025/2026 periods: station/horizon errors, interval coverage, episode/warning scores, timing, censoring and failure cases. Document any deviation from the recorded evaluation design before scoring.
-6. Update forecastable stations/dates from newly validated artifacts; implement and validate as-of feeds if present-day early warning is required. Current dashboard is replay only.
-7. Assess optional extensions (sequence/recursive models, local explanations) on validation evidence; document any decision not to implement them. They are not completed experiments.
-8. Regenerate final results, manifests and reports; rerun relevant tests/browser checks; complete the original requirement-by-requirement acceptance audit.
+1. Complete the required final-review evidence freeze, comparison tables,
+   robustness slices, dated test/UI rerun and dashboard checks in
+   `docs/remaining_checklist.md`.
+2. Freeze consistent claims in the README, dashboard, slides and report: the
+   archived-AQI replay ends in 2023; concentration and calibrated-AQI results
+   have separate 2025 tests; neither is a live or official 2024–2025 AQI feed.
+3. Obtain a broad official 2024–2025 hourly AQI target panel only if an
+   official-AQI claim beyond 2023 is required. Validate station identity,
+   timezone, interval and publication-latency semantics before using it.
+4. Treat station-specific weather, validated pollutant-feature utility,
+   recursive models, local explanations and live/as-of operation as separately
+   scoped extensions, not missing prerequisites for the current dashboard.
 
 ## Historical source-access blocker — 14 September
 
@@ -74,7 +97,10 @@ CPCB monthly/yearly download actions did not produce files. Its alternate Advanc
 
 ---
 
-Generated from saved experiment results. The current status below includes the backup model; sections 1–15 describe the original seven-station model evaluation.
+The following sections are an **archived seven-station engineering report**
+generated from the earlier saved experiment results. They are retained for
+reproducibility and must not override the 30-station/current-experiment
+addendum above, `project_status.md`, or `docs/acceptance.md`.
 
 ## 1. What was inherited
 
@@ -346,7 +372,13 @@ Files: experiments/results/combined_system contains combined predictions, numeri
 
 Implemented and executed: multi-station investigation/selection, calendar dataset, quality/EDA tables, leakage-safe feature tests, two baselines and two ML families, bounded time-aware tuning, A–E ablations, all four required horizons plus hourly trajectories, episode extraction/characterization, event and daily warning evaluation, feature importance, intervals, dashboard and reproducible reporting.
 
-Not established: official verification of individual readings, verified AQI timezone, defensible joined pollutant features, truly unseen external test, operational as-of weather and reporting latency, pollutant usefulness experiments, recursive comparison, local SHAP explanations, comprehensive hyperparameter search. The historical forecasting system works, but source verification, recent-data training and later-year evaluation remain unfinished.
+For this archived seven-station system, not established: official verification
+of individual readings, verified AQI timezone, defensible joined pollutant
+features, a truly unseen external test, operational as-of weather and
+reporting latency, pollutant usefulness experiments, recursive comparison,
+local SHAP explanations, or comprehensive hyperparameter search. Subsequent
+30-station and 2017–2025 concentration work is described in the current
+addendum above; its limits are stated there and in `docs/acceptance.md`.
 
 ## 17. Best next experiments
 
@@ -356,6 +388,8 @@ Not established: official verification of individual readings, verified AQI time
 4. Compare station-specific meteorology and pollutant models against this pooled baseline.
 5. Improve extreme-event recall using validation-only objectives and assess warning lead time, interval calibration by season, and episode probability calibration.
 
-Validation: the latest full suite has 17 passing tests, including station-screening and interval-end preprocessing checks. Streamlit AppTest passed after the station-coverage audit was added; earlier browser layout was inspected and corrected. New pollutant preprocessing is not yet integrated into the dashboard or trained models. See [validation record](validation.md) and [acceptance evidence](../docs/acceptance.md).
+Historical validation note: this archived report recorded 17 passing tests at
+the time it was generated. The current recorded suite has 21 passing tests;
+see [validation record](validation.md) and [acceptance evidence](../docs/acceptance.md).
 
 Sources and detailed assumptions: [methodology](../docs/methodology_v2.md), [initial audit](current_state_audit.md), [CPCB AQI calculation](https://cpcb.gov.in/National-Air-Quality-Index/), [data mirror](https://github.com/Vonter/india-cpcb-aqi), [Open-Meteo archive](https://open-meteo.com/en/docs/historical-weather-api).
