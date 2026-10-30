@@ -15,6 +15,10 @@ experiments/logs/*
 reports/figures/*
 reports/tables/*
 
+# Locally generated submission artifacts and working copies of source decks.
+deliverables/
+presentation_sources/
+
 # Minimal files needed to run the public Streamlit dashboard on Community Cloud.
 !data/processed/delhi_hourly_all_eligible.parquet
 !data/processed/delhi_concentrations_hourly_2017_2025.parquet
