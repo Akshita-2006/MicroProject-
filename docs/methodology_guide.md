@@ -64,8 +64,9 @@ The shaded range was set to aim for 90% coverage of individual hourly observatio
 
 The feature chart shows which inputs the main model uses most across its predictions. It does not explain the cause of pollution or the exact reason for one forecast.
 
-## What still needs work
+## Project scope
 
-The remaining task for later AQI testing is a broad, verified 2024–2025 hourly AQI target panel. A live service would also need current data and checks on reporting delays. The completed concentration-model work is recorded in the project status and checklist.
-
-Full calculation details are in `docs/methodology_v2.md`. Current results are in `reports/project_status.md`, and remaining tasks are in `docs/remaining_checklist.md`.
+This dashboard is a completed retrospective research project. Historical AQI
+replay is evaluated through 2023, while concentration forecasting is evaluated
+through 2025. The detailed evaluation results are in
+`reports/final_report.md`.
