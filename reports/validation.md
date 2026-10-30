@@ -2,6 +2,21 @@
 
 Most recent complete recorded suite: **21 tests passed**. The added check confirms the 30-station historical panel has a continuous hourly grid. Streamlit AppTest passed for the 30-station dashboard, the 2024-2025 pollutant-record view, the connected 2025 concentration forecast view, and two-way sidebar/pollutant date synchronisation. Concentration models were trained on 2017-2023, checked in 2024 and tested once on 2025. The AQI model itself still has no broad 2024-2025 official target panel. Historical entries below record earlier checks and their smaller test counts; they are not the current total. See [project status](project_status.md).
 
+## Submission rerun — 30 October 2026
+
+- Re-ran the full repository suite with
+  `python -m unittest discover -s tests -v`: **21 tests passed in 12.318
+  seconds**.
+- Streamlit AppTest completed with no application exceptions for the selected
+  2023 AQI replay, 2024 concentration forecast and 2025 pollutant-record
+  routes.
+- A temporary local Streamlit server returned HTTP 200 at `127.0.0.1:8503` and
+  was stopped after the smoke check.
+- Submission hashes and the scoped claim are recorded in
+  [submission readiness](submission_readiness.md). These checks establish
+  local reproducibility and application health; they do not turn the dashboard
+  into a live or official CPCB service.
+
 ---
 
 # Validation record — 12 September 2026
