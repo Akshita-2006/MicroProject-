@@ -16,7 +16,7 @@ needed only for a future claim of official-AQI evaluation after 2023.
 
 | Item | Value |
 |---|---|
-| Git revision | `2d7058ca0dd53e82817c1c98953b6e2f49f58f3b` |
+| Frozen model/data baseline revision | `2d7058ca0dd53e82817c1c98953b6e2f49f58f3b` |
 | Python runtime | 3.13.5 |
 | Dependency lock | `requirements-lock.txt` |
 | AQI replay stations | 30 |
